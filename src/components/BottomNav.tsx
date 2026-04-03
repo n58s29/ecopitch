@@ -38,8 +38,8 @@ const ConfigIcon = ({ active }: { active: boolean }) => (
 )
 
 const tabs: { id: Tab; label: string }[] = [
-  { id: 'dash', label: 'DASH' },
-  { id: 'results', label: 'RESULTS' },
+  { id: 'dash', label: 'ACCUEIL' },
+  { id: 'results', label: 'RÉSULTATS' },
   { id: 'innov', label: 'INNOV' },
   { id: 'config', label: 'CONFIG' },
 ]

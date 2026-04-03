@@ -7,10 +7,10 @@ const CENTER = RADAR_SIZE / 2
 const RADIUS = 72
 
 const axes = [
-  { label: 'COMPLIANCE', angle: -90 },
+  { label: 'CONFORMITÉ', angle: -90 },
   { label: 'INNOVATION', angle: 0 },
-  { label: 'FEASIBILITY', angle: 90 },
-  { label: 'ALIGNMENT', angle: 180 },
+  { label: 'FAISABILITÉ', angle: 90 },
+  { label: 'ALIGNEMENT', angle: 180 },
 ]
 
 function polarToXY(angle: number, r: number) {
@@ -174,7 +174,7 @@ export default function ResultsScreen() {
       {/* Hero block */}
       <div className="px-12 pt-8 pb-6">
         <p className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#b80068] mb-3">
-          Startup Assessment Final Report
+          Rapport d'évaluation startup
         </p>
         <h1
           className="font-black text-[#001932] leading-[0.92] mb-4"
@@ -182,7 +182,7 @@ export default function ResultsScreen() {
         >
           SNCF
           <br />
-          COMPLIANCE
+          CONFORMITÉ
           <br />
           SCORE: 82%
         </h1>
@@ -196,7 +196,7 @@ export default function ResultsScreen() {
       <div className="mx-6 mb-6 rounded-lg p-5" style={{ background: '#ffffff', boxShadow: '0 2px 12px rgba(0,25,50,0.04)' }}>
         <div className="flex items-start justify-between mb-4">
           <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#001932]">
-            Strategic Radar<br />Analysis
+            Analyse radar<br />stratégique
           </p>
           <div className="w-6 h-6 rounded-full border border-[#bfc8e0] flex items-center justify-center">
             <span className="text-[10px] text-[#415172] font-bold">i</span>
@@ -210,10 +210,10 @@ export default function ResultsScreen() {
         {/* Metric grid */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-4">
           {[
-            { label: 'COMPLIANCE', value: 92 },
+            { label: 'CONFORMITÉ', value: 92 },
             { label: 'INNOVATION', value: 85 },
-            { label: 'FEASIBILITY', value: 78 },
-            { label: 'STRATEGIC ALIGNMENT', value: 73 },
+            { label: 'FAISABILITÉ', value: 78 },
+            { label: 'ALIGNEMENT STRATÉGIQUE', value: 73 },
           ].map(m => (
             <div key={m.label}>
               <p className="text-[9px] font-bold tracking-[0.1em] uppercase text-[#415172] mb-1">{m.label}</p>
@@ -226,23 +226,23 @@ export default function ResultsScreen() {
       {/* Key Strengths */}
       <div className="mx-6 mb-6 rounded-lg p-5" style={{ background: '#eef4ff' }}>
         <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#001932] mb-5">
-          Key Strengths
+          Points forts
         </p>
         <div className="flex flex-col gap-5">
           <StrengthItem
             icon={<CheckIcon />}
-            title="High Regulatory Compliance"
-            desc="Full adherence to SNCF safety standards and European rail interoperability directives."
+            title="Conformité réglementaire élevée"
+            desc="Pleine adhérence aux normes de sécurité SNCF et aux directives européennes d'interopérabilité ferroviaire."
           />
           <StrengthItem
             icon={<BoltIcon />}
-            title="Disruptive Energy Logic"
-            desc="Innovative approach to kinetic energy recovery within urban rail ecosystems."
+            title="Logique énergétique disruptive"
+            desc="Approche innovante de la récupération d'énergie cinétique dans les écosystèmes ferroviaires urbains."
           />
           <StrengthItem
             icon={<PeopleIcon />}
-            title="Operational Ready"
-            desc="Hardware prototypes demonstrate TRL 6 maturity, suitable for immediate testing."
+            title="Prêt pour l'exploitation"
+            desc="Les prototypes matériels démontrent une maturité TRL 6, adaptés pour des tests immédiats."
           />
         </div>
       </div>
@@ -250,10 +250,10 @@ export default function ResultsScreen() {
       {/* Next steps CTA */}
       <div className="mx-6 mb-6 rounded-lg p-5" style={{ background: '#001932' }}>
         <p className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#4a90d9] mb-3">
-          Next Steps
+          Prochaines étapes
         </p>
         <p className="text-white font-bold text-lg leading-snug mb-5">
-          Discuss industrial partnership opportunities with our technical directors.
+          Discutez des opportunités de partenariat industriel avec nos directeurs techniques.
         </p>
         <button
           className="w-full flex items-center justify-between px-5 py-3.5 rounded font-black text-sm tracking-[0.1em] uppercase transition-all active:scale-[0.98]"
@@ -287,13 +287,13 @@ export default function ResultsScreen() {
       {/* Comparative performance */}
       <div className="mx-6 mb-4">
         <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#001932] text-center mb-5">
-          Comparative Performance Index
+          Indice de performance comparatif
         </p>
         <div className="flex flex-col gap-4">
           {[
             { label: 'INFRASTRUCTURE', value: 88, color: '#001932' },
-            { label: 'DIGITAL TWIN', value: 64, color: '#001932' },
-            { label: 'SUSTAINABILITY', value: 95, color: '#b80068' },
+            { label: 'JUMEAU NUMÉRIQUE', value: 64, color: '#001932' },
+            { label: 'DURABILITÉ', value: 95, color: '#b80068' },
           ].map(m => (
             <div key={m.label}>
               <div className="flex justify-between mb-1.5">

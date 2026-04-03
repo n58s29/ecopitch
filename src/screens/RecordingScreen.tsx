@@ -60,8 +60,8 @@ function ProgressBar({ value, color = '#705d00' }: { value: number; color?: stri
 }
 
 export default function RecordingScreen({ onDone }: { onDone: () => void }) {
-  const [recording, setRecording] = useState(true)
-  const [seconds, setSeconds] = useState(102) // 01:42 as shown
+  const [recording, setRecording] = useState(false)
+  const [seconds, setSeconds] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
@@ -72,6 +72,11 @@ export default function RecordingScreen({ onDone }: { onDone: () => void }) {
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [recording])
+
+  function handleStart() {
+    setSeconds(0)
+    setRecording(true)
+  }
 
   function handleStop() {
     setRecording(false)
@@ -103,13 +108,13 @@ export default function RecordingScreen({ onDone }: { onDone: () => void }) {
           className="font-black text-[#001932] leading-[0.95] mb-3"
           style={{ fontSize: 52, letterSpacing: '-0.02em' }}
         >
-          AUDIO PITCH
+          PITCH
           <br />
-          RECORDING
+          AUDIO
         </h1>
 
         <p className="italic text-[#415172] text-base mb-8">
-          Parlez dans le micro / casque
+          {recording ? 'Parlez dans le micro / casque' : 'Prêt à enregistrer votre pitch'}
         </p>
       </div>
 
@@ -147,26 +152,49 @@ export default function RecordingScreen({ onDone }: { onDone: () => void }) {
 
       {/* CTA Button */}
       <div className="px-6 mb-8">
-        <button
-          onClick={handleStop}
-          className="w-full flex items-center justify-center gap-4 py-5 rounded-lg transition-all duration-200 active:scale-[0.98]"
-          style={{
-            background: 'linear-gradient(135deg, #001932 0%, #002a52 100%)',
-            color: '#ffffff',
-          }}
-        >
-          <span className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center">
-            <span className="w-3 h-3 rounded-sm bg-white inline-block" />
-          </span>
-          <span
-            className="font-black tracking-[0.08em] text-lg uppercase"
-            style={{ letterSpacing: '0.1em' }}
+        {!recording ? (
+          <button
+            onClick={handleStart}
+            className="w-full flex items-center justify-center gap-4 py-5 rounded-lg transition-all duration-200 active:scale-[0.98]"
+            style={{
+              background: 'linear-gradient(135deg, #b80068 0%, #8c004f 100%)',
+              color: '#ffffff',
+            }}
           >
-            Stop and
-            <br />
-            Analyze
-          </span>
-        </button>
+            <span className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center">
+              <span className="w-3 h-3 rounded-full bg-white inline-block" />
+            </span>
+            <span
+              className="font-black tracking-[0.08em] text-lg uppercase"
+              style={{ letterSpacing: '0.1em' }}
+            >
+              Démarrer
+              <br />
+              l'enregistrement
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={handleStop}
+            className="w-full flex items-center justify-center gap-4 py-5 rounded-lg transition-all duration-200 active:scale-[0.98]"
+            style={{
+              background: 'linear-gradient(135deg, #001932 0%, #002a52 100%)',
+              color: '#ffffff',
+            }}
+          >
+            <span className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center">
+              <span className="w-3 h-3 rounded-sm bg-white inline-block" />
+            </span>
+            <span
+              className="font-black tracking-[0.08em] text-lg uppercase"
+              style={{ letterSpacing: '0.1em' }}
+            >
+              Arrêter et
+              <br />
+              Analyser
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Signal quality cards */}
@@ -176,7 +204,7 @@ export default function RecordingScreen({ onDone }: { onDone: () => void }) {
           style={{ background: '#ffffff', boxShadow: '0 2px 12px rgba(0,25,50,0.04)' }}
         >
           <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-[#415172] mb-2">
-            Signal<br />Quality
+            Qualité<br />signal
           </p>
           <ProgressBar value={88} color="#705d00" />
           <p className="text-sm font-semibold text-[#001932] mt-2">Excellent</p>
@@ -187,7 +215,7 @@ export default function RecordingScreen({ onDone }: { onDone: () => void }) {
           style={{ background: '#ffffff', boxShadow: '0 2px 12px rgba(0,25,50,0.04)' }}
         >
           <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-[#415172] mb-2">
-            Noise Level
+            Niveau bruit
           </p>
           <ProgressBar value={12} color="#001932" />
           <p className="text-sm font-semibold text-[#001932] mt-2">Minimal</p>
@@ -198,7 +226,7 @@ export default function RecordingScreen({ onDone }: { onDone: () => void }) {
       <div className="px-6 flex items-center gap-3 mt-2">
         <div className="h-px flex-1 bg-[#bfc8e0]/40" />
         <p className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#415172]">
-          Vertical Rail System
+          Progression
         </p>
         <div className="w-12 h-6 rounded bg-[#dbe9ff]" />
       </div>
