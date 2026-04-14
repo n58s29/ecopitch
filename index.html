@@ -1,13 +1,1567 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ecopitch</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#00205b">
+  <title>PitchExpress — SNCF × VivaTech 2026</title>
+  <style>
+    /* ================================================================
+       DESIGN SYSTEM — FAN / e.SNCF Solutions
+       Palette : navy #00205b · cerulean #0084d4 · amber #eed484
+                 mint #00b388 · ochre #dc582a · white #ffffff
+       Typographie : Avenir Next / Avenir / Arial, poids max 500
+       ================================================================ */
+    :root {
+      --navy:     #00205b;
+      --cerulean: #0084d4;
+      --amber:    #eed484;
+      --mint:     #00b388;
+      --ochre:    #dc582a;
+      --white:    #ffffff;
+
+      --text-primary:   rgba(255,255,255,1);
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted:     rgba(255,255,255,0.42);
+      --surface:        rgba(255,255,255,0.06);
+      --surface-hover:  rgba(255,255,255,0.10);
+      --border:         rgba(255,255,255,0.11);
+
+      --radius-card: 14px;
+      --radius-pill: 2rem;
+      --transition:  0.2s ease;
+      --font: 'Avenir Next', 'Avenir', Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100dvh;
+      background: var(--navy);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ---- Screens ---- */
+    .screen {
+      display: none;
+      min-height: 100dvh;
+      padding: 1.5rem 1.25rem 2.5rem;
+      flex-direction: column;
+      animation: fadeIn 0.28s ease;
+    }
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- Badge ---- */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0,132,212,0.18);
+      border: 1px solid rgba(0,132,212,0.35);
+      border-radius: var(--radius-pill);
+      padding: 0.28rem 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--cerulean);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+      width: fit-content;
+    }
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--cerulean);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ---- Typography ---- */
+    h1 {
+      font-size: clamp(1.45rem, 5vw, 1.9rem);
+      font-weight: 500;
+      line-height: 1.22;
+      margin-bottom: 0.45rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.65rem;
+    }
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.55;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ---- Card ---- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 0.9rem 1rem;
+    }
+
+    /* ================================================================
+       SCREEN 1 — PITCH
+       ================================================================ */
+    #screen-pitch .hd { margin-bottom: 1.25rem; }
+
+    /* Timer */
+    #timer-wrap {
+      margin-bottom: 0.85rem;
+    }
+    .timer-bar-bg {
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background: var(--cerulean);
+      border-radius: 3px;
+      transition: width 1s linear, background 0.35s;
+    }
+    .timer-bar.warning { background: var(--amber); }
+    .timer-bar.danger  { background: var(--ochre); }
+    .timer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 0.3rem;
+    }
+    .timer-hint { font-size: 0.73rem; color: var(--text-muted); }
+    #timer-count {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--white);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Mic zone */
+    .mic-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0.75rem 0 0.9rem;
+    }
+    .mic-btn-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px; height: 120px;
+      margin-bottom: 0.55rem;
+    }
+
+    /* Idle pulse rings */
+    .pulse-ring {
+      position: absolute;
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0,132,212,0.45);
+      animation: pulseIdle 2.2s ease-out infinite;
+    }
+    .pulse-ring:nth-child(2) { animation-delay: 0.7s; }
+    .pulse-ring:nth-child(3) { animation-delay: 1.4s; }
+    @keyframes pulseIdle {
+      0%   { transform: scale(0.8); opacity: 0.7; }
+      100% { transform: scale(2.0); opacity: 0; }
+    }
+
+    /* Recording wave rings */
+    .wave-ring {
+      display: none;
+      position: absolute;
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: rgba(0,179,136,0.12);
+      animation: waveAnim 1.4s ease-out infinite;
+    }
+    .wave-ring:nth-child(5) { animation-delay: 0.35s; }
+    .wave-ring:nth-child(6) { animation-delay: 0.7s; }
+    @keyframes waveAnim {
+      0%   { transform: scale(0.85); opacity: 0.6; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    #btn-mic {
+      position: relative;
+      z-index: 10;
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      border: none;
+      background: var(--cerulean);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
+      box-shadow: 0 0 0 7px rgba(0,132,212,0.18), 0 8px 28px rgba(0,0,0,0.32);
+    }
+    #btn-mic:active { transform: scale(0.94); }
+    #btn-mic.recording {
+      background: var(--mint);
+      box-shadow: 0 0 0 7px rgba(0,179,136,0.18), 0 8px 28px rgba(0,0,0,0.32);
+    }
+    #btn-mic svg { width: 34px; height: 34px; }
+
+    .mic-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+    .mic-label.rec { color: var(--mint); }
+
+    /* Transcript */
+    .transcript-card {
+      min-height: 72px;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-bottom: 0.7rem;
+      scroll-behavior: smooth;
+    }
+    .transcript-card p { font-size: 0.84rem; line-height: 1.6; color: var(--text-secondary); }
+    .transcript-card .ph { color: var(--text-muted); font-style: italic; font-size: 0.8rem; }
+
+    /* Manual fallback */
+    #manual-wrap { margin-bottom: 0.7rem; }
+    #manual-wrap .note {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+    #manual-text {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 0.84rem;
+      padding: 0.7rem 0.85rem;
+      resize: none;
+      min-height: 90px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    #manual-text:focus { border-color: var(--cerulean); }
+    #manual-text::placeholder { color: var(--text-muted); }
+
+    /* Checklist */
+    .checklist-hd {
+      font-size: 0.73rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.45rem;
+    }
+    .checklist { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.8rem; }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.48rem 0.75rem;
+      border-radius: 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .check-item.checked {
+      background: rgba(0,179,136,0.11);
+      border-color: rgba(0,179,136,0.28);
+      color: var(--text-primary);
+      animation: checkPop 0.38s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes checkPop {
+      0%   { transform: scale(1); }
+      45%  { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    .chk-icon {
+      flex-shrink: 0;
+      width: 19px; height: 19px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: transparent;
+      transition: all var(--transition);
+    }
+    .check-item.checked .chk-icon {
+      background: var(--mint);
+      border-color: var(--mint);
+      color: #fff;
+    }
+
+    /* Finish button */
+    #btn-finish {
+      display: none;
+      width: 100%;
+      padding: 0.82rem;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: var(--cerulean);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.94rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity var(--transition);
+      margin-top: auto;
+    }
+    #btn-finish:active { opacity: 0.82; }
+
+    /* ================================================================
+       SCREEN 2 — REVIEW
+       ================================================================ */
+    #screen-review .hd { margin-bottom: 0.9rem; }
+
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(238,212,132,0.13);
+      border: 1px solid rgba(238,212,132,0.28);
+      border-radius: var(--radius-pill);
+      padding: 0.28rem 0.75rem;
+      font-size: 0.76rem;
+      color: var(--amber);
+      font-weight: 500;
+      margin-bottom: 0.85rem;
+    }
+
+    .field-group { margin-bottom: 0.65rem; }
+    .field-group label {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.28rem;
+    }
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 0.87rem;
+      padding: 0.62rem 0.82rem;
+      outline: none;
+      transition: border-color var(--transition);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath fill='%23ffffff55' d='M5.5 7L0 0h11z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.82rem center;
+      padding-right: 2rem;
+    }
+    .field-group select option { background: #001844; color: #fff; }
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus { border-color: var(--cerulean); }
+    .field-group input::placeholder,
+    .field-group textarea::placeholder { color: var(--text-muted); }
+    .field-group textarea { resize: none; min-height: 78px; line-height: 1.55; }
+
+    .lbl-req::after { content: ' *'; color: var(--ochre); }
+
+    .err-msg {
+      font-size: 0.73rem;
+      color: var(--ochre);
+      margin-top: 0.22rem;
+      display: none;
+    }
+    .err-msg.on { display: block; }
+
+    #btn-submit {
+      width: 100%;
+      padding: 0.92rem;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: var(--cerulean);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.97rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity var(--transition), transform var(--transition);
+      margin-top: 0.5rem;
+    }
+    #btn-submit:active { transform: scale(0.98); opacity: 0.88; }
+    #btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ================================================================
+       SCREEN 3 — THANK YOU
+       ================================================================ */
+    #screen-thanks {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 1.6rem;
+    }
+    .thanks-icon {
+      width: 78px; height: 78px;
+      border-radius: 50%;
+      background: rgba(0,179,136,0.14);
+      border: 2px solid var(--mint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: successPop 0.48s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes successPop {
+      0%   { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .thanks-icon svg { width: 38px; height: 38px; color: var(--mint); }
+
+    .score-display {
+      background: rgba(238,212,132,0.09);
+      border: 1px solid rgba(238,212,132,0.22);
+      border-radius: var(--radius-card);
+      padding: 1.1rem 2rem;
+      width: 100%;
+    }
+    .score-num {
+      font-size: 2.6rem;
+      font-weight: 500;
+      color: var(--amber);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .score-denom { font-size: 1.1rem; color: var(--text-muted); }
+    .score-lbl { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+    #btn-restart {
+      width: 100%;
+      max-width: 260px;
+      padding: 0.88rem;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--cerulean);
+      background: transparent;
+      color: var(--cerulean);
+      font-family: var(--font);
+      font-size: 0.94rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+    #btn-restart:active { background: var(--cerulean); color: #fff; }
+
+    /* ================================================================
+       API KEY MODAL (bottom sheet)
+       ================================================================ */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 0 env(safe-area-inset-bottom);
+    }
+    .modal-bg.open { display: flex; }
+    .modal-sheet {
+      background: #071b45;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      padding: 1.5rem 1.25rem 2rem;
+      width: 100%;
+      max-width: 480px;
+      animation: slideUp 0.28s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .modal-sheet h2 { font-size: 1rem; font-weight: 500; margin-bottom: 0.45rem; }
+    .modal-sheet p  { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.9rem; line-height: 1.55; }
+    #input-api-key {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 0.87rem;
+      padding: 0.68rem 0.9rem;
+      outline: none;
+      margin-bottom: 0.7rem;
+      transition: border-color var(--transition);
+    }
+    #input-api-key:focus { border-color: var(--cerulean); }
+    #input-api-key::placeholder { color: var(--text-muted); }
+    #btn-save-key {
+      width: 100%;
+      padding: 0.82rem;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: var(--cerulean);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.94rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity var(--transition);
+    }
+    #btn-save-key:active { opacity: 0.82; }
+
+    /* ================================================================
+       ANALYZING OVERLAY
+       ================================================================ */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,32,91,0.82);
+      backdrop-filter: blur(7px);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    #overlay.on { display: flex; }
+    .spinner {
+      width: 46px; height: 46px;
+      border: 3px solid var(--border);
+      border-top-color: var(--cerulean);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #overlay-msg { font-size: 0.88rem; color: var(--text-secondary); }
+
+    /* ================================================================
+       TOAST
+       ================================================================ */
+    #toast {
+      position: fixed;
+      bottom: 1.4rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(130%);
+      background: #071b45;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0.58rem 1.15rem;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      z-index: 300;
+      transition: transform 0.28s ease;
+      white-space: nowrap;
+      pointer-events: none;
+      max-width: calc(100vw - 2.5rem);
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.ok   { border-color: rgba(0,179,136,0.4); }
+    #toast.bad  { border-color: rgba(220,88,42,0.4); }
+
+    /* ================================================================
+       UTILITIES
+       ================================================================ */
+    .hidden { display: none !important; }
+    .mt-auto { margin-top: auto; }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     SCREEN 1 — PITCHEZ VOTRE SOLUTION
+     ================================================================ -->
+<main id="screen-pitch" class="screen active" role="main">
+  <div class="hd">
+    <div class="badge">SNCF × VivaTech 2026</div>
+    <h1>Votre train d'idées part dans 90 secondes</h1>
+    <p class="subtitle">Pitchez votre solution — l'IA vérifie en temps réel que vous couvrez les points essentiels.</p>
+  </div>
+
+  <!-- Countdown timer (hidden until recording starts) -->
+  <div id="timer-wrap" class="hidden">
+    <div class="timer-bar-bg">
+      <div id="timer-bar" class="timer-bar"></div>
+    </div>
+    <div class="timer-row">
+      <span class="timer-hint">Temps restant</span>
+      <span id="timer-count">1:30</span>
+    </div>
+  </div>
+
+  <!-- Microphone button -->
+  <div class="mic-zone">
+    <div class="mic-btn-wrap">
+      <!-- Idle pulse rings (cerulean) -->
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <!-- Recording wave rings (mint) -->
+      <div class="wave-ring"></div>
+      <div class="wave-ring"></div>
+      <div class="wave-ring"></div>
+      <button id="btn-mic" aria-label="Démarrer l'enregistrement">
+        <!-- Mic icon — visible when idle -->
+        <svg id="ico-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8"  y1="23" x2="16" y2="23"/>
+        </svg>
+        <!-- Stop icon — visible when recording -->
+        <svg id="ico-stop" class="hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="6" y="6" width="12" height="12" rx="2.5"/>
+        </svg>
+      </button>
+    </div>
+    <span id="mic-label" class="mic-label">Appuyer pour pitcher</span>
+  </div>
+
+  <!-- Live transcript (Web Speech API) -->
+  <div id="transcript-card" class="card transcript-card" aria-live="polite" aria-label="Transcription en temps réel">
+    <p class="ph" id="transcript-ph">Votre transcription apparaîtra ici en temps réel…</p>
+    <p id="transcript-txt" class="hidden"></p>
+  </div>
+
+  <!-- Manual input fallback (shown when Web Speech API is unavailable) -->
+  <div id="manual-wrap" class="hidden">
+    <p class="note">La reconnaissance vocale n'est pas disponible sur cet appareil.<br>Saisissez votre pitch ci-dessous :</p>
+    <textarea id="manual-text" placeholder="Décrivez votre solution, le problème qu'elle résout, votre cible, votre technologie clé…" aria-label="Texte du pitch"></textarea>
+  </div>
+
+  <!-- 8 essential checklist items — auto-checked by AI -->
+  <p class="checklist-hd">Points essentiels</p>
+  <div id="cl1" class="checklist" role="list" aria-label="Points essentiels du pitch"></div>
+
+  <!-- Finish early button (shown only during recording) -->
+  <button id="btn-finish" aria-label="Terminer l'enregistrement maintenant">J'ai terminé →</button>
+</main>
+
+
+<!-- ================================================================
+     SCREEN 2 — VÉRIFIEZ ET COMPLÉTEZ
+     ================================================================ -->
+<main id="screen-review" class="screen" role="main">
+  <div class="hd">
+    <div class="badge">Récapitulatif</div>
+    <h1>Vérifiez et complétez</h1>
+    <p class="subtitle">L'IA a pré-rempli ces champs depuis votre pitch. Modifiez si besoin, puis laissez vos coordonnées.</p>
+  </div>
+
+  <div id="score-pill" class="score-pill">
+    <span id="score-txt">0/8 points couverts</span>
+  </div>
+
+  <!-- AI-extracted & editable fields -->
+  <p class="section-label">Votre solution</p>
+
+  <div class="field-group">
+    <label for="f-solution">Nom de la solution / startup</label>
+    <input id="f-solution" type="text" placeholder="ex. RailSense" autocomplete="organization">
+  </div>
+
+  <div class="field-group">
+    <label for="f-domaine">Domaine d'application</label>
+    <select id="f-domaine">
+      <option value="">— Sélectionnez —</option>
+      <option>Maintenance prédictive</option>
+      <option>Expérience voyageur</option>
+      <option>Décarbonation</option>
+      <option>Cybersécurité</option>
+      <option>Supply chain</option>
+      <option>RH / Formation</option>
+      <option>Infrastructure</option>
+      <option>Billettique</option>
+      <option>Autre</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="f-techno">Technologie principale</label>
+    <select id="f-techno">
+      <option value="">— Sélectionnez —</option>
+      <option>IA / ML</option>
+      <option>IoT</option>
+      <option>Blockchain</option>
+      <option>Computer Vision</option>
+      <option>NLP</option>
+      <option>Robotique</option>
+      <option>Digital Twin</option>
+      <option>Data Analytics</option>
+      <option>Autre</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="f-maturite">Stade de maturité</label>
+    <select id="f-maturite">
+      <option value="">— Sélectionnez —</option>
+      <option>Idée</option>
+      <option>POC</option>
+      <option>MVP</option>
+      <option>Produit commercialisé</option>
+      <option>Scale-up</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="f-resume">Résumé du pitch (2-3 phrases)</label>
+    <textarea id="f-resume" placeholder="Généré par l'IA — éditez si besoin…"></textarea>
+  </div>
+
+  <!-- Mini checklist recap -->
+  <p class="section-label">Points couverts</p>
+  <div id="cl2" class="checklist" style="margin-bottom:1rem" role="list" aria-label="Points essentiels couverts"></div>
+
+  <!-- Contact form -->
+  <p class="section-label">Vos coordonnées</p>
+
+  <div class="field-group">
+    <label for="f-nom" class="lbl-req">Nom du contact</label>
+    <input id="f-nom" type="text" placeholder="Prénom Nom" autocomplete="name">
+    <span class="err-msg" id="err-nom">Ce champ est requis.</span>
+  </div>
+
+  <div class="field-group">
+    <label for="f-entreprise" class="lbl-req">Nom de l'entreprise</label>
+    <input id="f-entreprise" type="text" placeholder="Ma Startup SAS" autocomplete="organization">
+    <span class="err-msg" id="err-entreprise">Ce champ est requis.</span>
+  </div>
+
+  <div class="field-group">
+    <label for="f-email" class="lbl-req">Email</label>
+    <input id="f-email" type="email" placeholder="vous@startup.com" autocomplete="email">
+    <span class="err-msg" id="err-email">Adresse email invalide.</span>
+  </div>
+
+  <div class="field-group">
+    <label for="f-tel">Téléphone (optionnel)</label>
+    <input id="f-tel" type="tel" placeholder="+33 6 00 00 00 00" autocomplete="tel">
+  </div>
+
+  <div class="field-group">
+    <label for="f-url">LinkedIn / Site web (optionnel)</label>
+    <input id="f-url" type="url" placeholder="https://…" autocomplete="url">
+  </div>
+
+  <button id="btn-submit" aria-label="Envoyer mon pitch">Envoyer mon pitch 🚀</button>
+</main>
+
+
+<!-- ================================================================
+     SCREEN 3 — MERCI !
+     ================================================================ -->
+<main id="screen-thanks" class="screen" role="main">
+  <div class="thanks-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+
+  <div>
+    <h1>Merci <span id="thanks-name"></span>&nbsp;!</h1>
+    <p class="subtitle">Votre pitch a bien été enregistré. L'équipe Innovation SNCF vous recontactera très vite.</p>
+  </div>
+
+  <div class="score-display">
+    <div class="score-num"><span id="t-score">0</span><span class="score-denom">/8</span></div>
+    <div class="score-lbl" id="t-encourage">points essentiels couverts</div>
+  </div>
+
+  <button id="btn-restart">Nouveau pitch</button>
+</main>
+
+
+<!-- ================================================================
+     ANALYZING OVERLAY
+     ================================================================ -->
+<div id="overlay" role="status" aria-live="polite">
+  <div class="spinner"></div>
+  <p id="overlay-msg">L'IA analyse votre pitch…</p>
+</div>
+
+
+<!-- ================================================================
+     API KEY MODAL (bottom sheet)
+     Affiché au premier lancement si pas de ?key= dans l'URL
+     ================================================================ -->
+<div id="modal-key" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modal-key-title">
+  <div class="modal-sheet">
+    <h2 id="modal-key-title">Clé API Anthropic</h2>
+    <p>
+      Pour analyser votre pitch en temps réel, une clé API Anthropic est nécessaire.
+      Elle sera uniquement conservée durant cette session et ne sera jamais transmise à un tiers.
+    </p>
+    <input id="input-api-key" type="password" placeholder="sk-ant-api03-…" aria-label="Clé API Anthropic" autocomplete="off" spellcheck="false">
+    <button id="btn-save-key">Continuer →</button>
+  </div>
+</div>
+
+
+<!-- TOAST notification -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+
+<script>
+/* ================================================================
+   PitchExpress — SNCF × VivaTech 2026
+   Vanilla JS, zero dependencies, single-file HTML
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   CONFIGURATION — modifier avant déploiement
+   ---------------------------------------------------------------- */
+
+// Endpoint POST de réception des données
+// • Google Forms :   https://docs.google.com/forms/d/e/XXXXX/formResponse
+// • Tally.so :       https://tally.so/r/XXXXX
+// • Make webhook :   https://hook.eu1.make.com/XXXXX
+// • Power Automate : https://prod-xx.westeurope.logic.azure.com/workflows/XXXXX
+// • n8n :            https://your-n8n.com/webhook/XXXXX
+const SUBMIT_URL = 'https://your-endpoint.example.com/submit'; // ← CONFIGURER ICI
+
+// Modèle Claude utilisé
+const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+
+// Durée maximale du pitch (secondes)
+const PITCH_DURATION = 90;
+
+// Intervalle d'analyse partielle pendant l'enregistrement (secondes)
+// 0 = désactivé (analyse uniquement à la fin du pitch)
+const PARTIAL_INTERVAL = 20;
+
+
+/* ----------------------------------------------------------------
+   CHECKLIST — 8 questions essentielles d'un bon pitch
+   ---------------------------------------------------------------- */
+const ITEMS = [
+  { id: 'probleme',      q: 'Quel problème résolvez-vous ?' },
+  { id: 'cible',         q: 'Pour qui ? (client cible / utilisateur)' },
+  { id: 'solution',      q: 'Quelle est votre solution ?' },
+  { id: 'techno',        q: 'Quelle technologie / innovation clé ?' },
+  { id: 'differenciant', q: 'Quel est votre avantage concurrentiel ?' },
+  { id: 'maturite',      q: 'Quel stade de maturité ?' },
+  { id: 'lien_sncf',     q: 'Quel lien avec le ferroviaire / SNCF ?' },
+  { id: 'modele_eco',    q: 'Quel est votre modèle économique ?' },
+];
+
+
+/* ----------------------------------------------------------------
+   APPLICATION STATE
+   ---------------------------------------------------------------- */
+const S = {
+  apiKey:          '',
+  transcript:      '',     // résultat final du speech recognition
+  interim:         '',     // texte intermédiaire (en cours de reconnaissance)
+  recording:       false,
+  timeLeft:        PITCH_DURATION,
+  timerInt:        null,
+  partialInt:      null,
+  lastAnalyzedLen: 0,
+  checks:          {},     // { [itemId]: boolean }
+  ai:              {},     // données extraites par Claude
+  speechOK:        false,  // Web Speech API disponible ?
+  rec:             null,   // SpeechRecognition instance
+};
+ITEMS.forEach(i => { S.checks[i.id] = false; });
+
+
+/* ----------------------------------------------------------------
+   DOM HELPERS
+   ---------------------------------------------------------------- */
+const $  = id => document.getElementById(id);
+const qa = s  => document.querySelectorAll(s);
+
+function show(id) {
+  qa('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+let _toastTimer = null;
+function toast(msg, type = '', ms = 3500) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+function showOverlay(msg = 'L\'IA analyse votre pitch…') {
+  $('overlay-msg').textContent = msg;
+  $('overlay').classList.add('on');
+}
+function hideOverlay() { $('overlay').classList.remove('on'); }
+
+
+/* ----------------------------------------------------------------
+   API KEY — BYOK PATTERN
+   Priorité : ?key= param URL → sessionStorage → modal de saisie
+   ---------------------------------------------------------------- */
+function loadKey() {
+  // L'animateur peut pré-configurer la clé dans le QR code via ?key=sk-ant-xxx
+  const urlKey = new URLSearchParams(location.search).get('key');
+  if (urlKey) {
+    sessionStorage.setItem('apk', urlKey);
+    // Sécurité : retire la clé de l'URL visible dans le navigateur
+    history.replaceState({}, '', location.pathname);
+    return urlKey;
+  }
+  return sessionStorage.getItem('apk') || '';
+}
+
+function requireKey() {
+  return new Promise(resolve => {
+    const k = loadKey();
+    if (k) { S.apiKey = k; resolve(k); return; }
+    $('modal-key').classList.add('open');
+    $('btn-save-key').onclick = () => {
+      const v = $('input-api-key').value.trim();
+      if (!v.startsWith('sk-ant-')) {
+        toast('Clé invalide — elle doit commencer par sk-ant-', 'bad');
+        return;
+      }
+      sessionStorage.setItem('apk', v);
+      S.apiKey = v;
+      $('modal-key').classList.remove('open');
+      resolve(v);
+    };
+  });
+}
+
+
+/* ----------------------------------------------------------------
+   CHECKLIST — construction & mise à jour
+   ---------------------------------------------------------------- */
+function buildCL(containerId) {
+  const c = $(containerId);
+  c.innerHTML = '';
+  ITEMS.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'check-item' + (S.checks[item.id] ? ' checked' : '');
+    div.id = `${containerId}__${item.id}`;
+    div.setAttribute('role', 'listitem');
+    div.innerHTML = `<div class="chk-icon" aria-hidden="true">${S.checks[item.id] ? '✓' : ''}</div><span>${item.q}</span>`;
+    c.appendChild(div);
+  });
+}
+
+function syncCL() {
+  // Synchronise les deux checklists (screen 1 + screen 2) avec l'état S.checks
+  ['cl1', 'cl2'].forEach(cid => {
+    ITEMS.forEach(item => {
+      const el = $(`${cid}__${item.id}`);
+      if (!el) return;
+      if (S.checks[item.id] && !el.classList.contains('checked')) {
+        el.classList.add('checked');
+        el.querySelector('.chk-icon').textContent = '✓';
+      }
+    });
+  });
+}
+
+function checkedCount() {
+  return ITEMS.filter(i => S.checks[i.id]).length;
+}
+
+
+/* ----------------------------------------------------------------
+   TIMER
+   ---------------------------------------------------------------- */
+function startTimer() {
+  S.timeLeft = PITCH_DURATION;
+  $('timer-wrap').classList.remove('hidden');
+  renderTimer();
+  S.timerInt = setInterval(() => {
+    S.timeLeft--;
+    renderTimer();
+    if (S.timeLeft <= 0) { clearInterval(S.timerInt); finishPitch(); }
+  }, 1000);
+}
+
+function renderTimer() {
+  const pct = (S.timeLeft / PITCH_DURATION) * 100;
+  const bar = $('timer-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'timer-bar' + (S.timeLeft <= 10 ? ' danger' : S.timeLeft <= 30 ? ' warning' : '');
+  const m = Math.floor(S.timeLeft / 60);
+  const s = (S.timeLeft % 60).toString().padStart(2, '0');
+  $('timer-count').textContent = `${m}:${s}`;
+}
+
+function stopTimer() {
+  clearInterval(S.timerInt);
+  clearInterval(S.partialInt);
+  S.timerInt = S.partialInt = null;
+}
+
+
+/* ----------------------------------------------------------------
+   WEB SPEECH API — transcription en temps réel
+   Fallback : textarea manuelle si non supporté (Firefox, certains Android)
+   ---------------------------------------------------------------- */
+function initSpeech() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    S.speechOK = false;
+    $('manual-wrap').classList.remove('hidden');
+    $('transcript-card').classList.add('hidden');
+    return;
+  }
+  S.speechOK = true;
+  const r = new SR();
+  r.continuous      = true;
+  r.interimResults  = true;
+  r.lang            = 'fr-FR';
+  r.maxAlternatives = 1;
+
+  r.onresult = e => {
+    let fin = '', intr = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      e.results[i].isFinal ? (fin += t + ' ') : (intr += t);
+    }
+    if (fin) S.transcript += fin;
+    S.interim = intr;
+    renderTranscript();
+  };
+
+  r.onerror = ev => {
+    if (ev.error === 'not-allowed') {
+      toast('Microphone refusé — autorisez l\'accès dans vos réglages.', 'bad', 5000);
+      stopRecording();
+    }
+    // 'no-speech' et 'aborted' sont normaux, on les ignore silencieusement
+  };
+
+  // Les navigateurs coupent automatiquement la reconnaissance après un silence.
+  // On redémarre si on est toujours en cours d'enregistrement.
+  r.onend = () => { if (S.recording) { try { r.start(); } catch(_) {} } };
+
+  S.rec = r;
+}
+
+function renderTranscript() {
+  const ph = $('transcript-ph');
+  const tx = $('transcript-txt');
+  const full = S.transcript
+    + (S.interim ? `<em style="color:rgba(255,255,255,0.38)">${S.interim}</em>` : '');
+  if (full) {
+    ph.classList.add('hidden');
+    tx.classList.remove('hidden');
+    tx.innerHTML = full;
+  } else {
+    ph.classList.remove('hidden');
+    tx.classList.add('hidden');
+  }
+  // Auto-scroll vers le bas
+  const card = $('transcript-card');
+  card.scrollTop = card.scrollHeight;
+}
+
+
+/* ----------------------------------------------------------------
+   RECORDING — start / stop
+   ---------------------------------------------------------------- */
+async function startRecording() {
+  // Demande explicite de permission micro (meilleure UX que le prompt natif)
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch(_) {
+    toast('Accès au microphone refusé — vérifiez vos réglages.', 'bad', 5000);
+    return;
+  }
+
+  S.recording      = true;
+  S.transcript     = '';
+  S.interim        = '';
+  S.lastAnalyzedLen = 0;
+  ITEMS.forEach(i => { S.checks[i.id] = false; });
+
+  // UI : bouton passe en mode "stop"
+  $('btn-mic').classList.add('recording');
+  $('btn-mic').setAttribute('aria-label', 'Arrêter l\'enregistrement');
+  $('ico-mic').classList.add('hidden');
+  $('ico-stop').classList.remove('hidden');
+  $('mic-label').textContent = 'Enregistrement — appuyer pour arrêter';
+  $('mic-label').classList.add('rec');
+
+  // Bascule des anneaux : idle → wave
+  qa('.pulse-ring').forEach(r => r.style.display = 'none');
+  qa('.wave-ring').forEach(r  => r.style.display = 'block');
+
+  $('btn-finish').style.display = 'block';
+  buildCL('cl1');
+  startTimer();
+
+  if (S.speechOK) { try { S.rec.start(); } catch(_) {} }
+
+  // Analyse partielle toutes les PARTIAL_INTERVAL secondes
+  if (PARTIAL_INTERVAL > 0) {
+    S.partialInt = setInterval(async () => {
+      const cur = liveText();
+      if (cur.length > S.lastAnalyzedLen + 80) {
+        S.lastAnalyzedLen = cur.length;
+        try { await analyzePartial(cur); } catch(_) {}
+      }
+    }, PARTIAL_INTERVAL * 1000);
+  }
+}
+
+function stopRecording() {
+  S.recording = false;
+  if (S.rec) { try { S.rec.stop(); } catch(_) {} }
+  stopTimer();
+
+  // UI : bouton repasse en mode "mic"
+  $('btn-mic').classList.remove('recording');
+  $('btn-mic').setAttribute('aria-label', 'Démarrer l\'enregistrement');
+  $('ico-mic').classList.remove('hidden');
+  $('ico-stop').classList.add('hidden');
+  $('mic-label').textContent = 'Appuyer pour pitcher';
+  $('mic-label').classList.remove('rec');
+  qa('.pulse-ring').forEach(r => r.style.display = '');
+  qa('.wave-ring').forEach(r  => r.style.display = 'none');
+  $('btn-finish').style.display = 'none';
+}
+
+// Retourne le texte courant (speech ou manuel)
+function liveText() {
+  return S.speechOK ? S.transcript.trim() : $('manual-text').value.trim();
+}
+
+async function finishPitch() {
+  stopRecording();
+  const txt = liveText();
+  if (!txt) {
+    toast('Aucun texte détecté. Saisissez votre pitch manuellement.', 'bad', 4000);
+    if (!S.speechOK) $('manual-wrap').classList.remove('hidden');
+    return;
+  }
+
+  showOverlay('L\'IA analyse votre pitch…');
+  try {
+    await analyzeFullPitch(txt);
+  } catch(e) {
+    console.error('[Claude]', e);
+    toast('Analyse IA indisponible — vous pouvez compléter manuellement.', 'bad', 4500);
+  }
+  hideOverlay();
+  goReview();
+}
+
+
+/* ----------------------------------------------------------------
+   CLAUDE API — appels Anthropic
+   ---------------------------------------------------------------- */
+
+// Analyse partielle : retourne uniquement les checks (prompt léger)
+async function analyzePartial(txt) {
+  if (!S.apiKey) return;
+  const r = await callClaude(promptPartial(txt));
+  if (r?.checks) {
+    ITEMS.forEach(item => { if (r.checks[item.id] === true) S.checks[item.id] = true; });
+    syncCL();
+  }
+}
+
+// Analyse complète : checks + extraction des données de pré-remplissage
+async function analyzeFullPitch(txt) {
+  if (!S.apiKey) return;
+  const r = await callClaude(promptFull(txt));
+  if (!r) return;
+  if (r.checks) ITEMS.forEach(i => { if (r.checks[i.id] === true) S.checks[i.id] = true; });
+  S.ai = r;
+  syncCL();
+}
+
+/**
+ * Appel direct à l'API Anthropic depuis le navigateur.
+ * Le header `anthropic-dangerous-direct-browser-access` est requis
+ * pour les appels cross-origin côté client.
+ */
+async function callClaude(prompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': S.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model:      CLAUDE_MODEL,
+      max_tokens: 1024,
+      messages:   [{ role: 'user', content: prompt }],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`HTTP ${res.status} — ${JSON.stringify(err)}`);
+  }
+  const data = await res.json();
+  const text = data.content?.[0]?.text || '';
+  // Extraction robuste du bloc JSON dans la réponse
+  const m = text.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('Pas de JSON dans la réponse Claude');
+  return JSON.parse(m[0]);
+}
+
+
+/* ----------------------------------------------------------------
+   PROMPTS CLAUDE
+   ---------------------------------------------------------------- */
+
+/**
+ * Prompt léger pour analyse partielle (pendant l'enregistrement).
+ * Ne retourne que les 8 booléens de la checklist.
+ */
+function promptPartial(txt) {
+  return `Tu analyses un pitch de startup en cours d'enregistrement lors de VivaTech 2026 pour SNCF.
+Détermine quels points sont DÉJÀ mentionnés, même implicitement.
+Réponds UNIQUEMENT avec du JSON valide (pas de texte avant ni après).
+
+Pitch partiel :
+"""
+${txt}
+"""
+
+Format exact :
+{"checks":{"probleme":true,"cible":false,"solution":true,"techno":false,"differenciant":false,"maturite":false,"lien_sncf":false,"modele_eco":false}}
+
+Critères (indulgents — si c'est implicite, marque true) :
+- probleme : un problème, douleur ou défi est évoqué
+- cible : une cible client/utilisateur est identifiable
+- solution : un produit, service ou approche est décrit
+- techno : une technologie ou innovation est mentionnée
+- differenciant : un avantage vs l'existant ou la concurrence est évoqué
+- maturite : idée / POC / MVP / produit / scaling mentionné
+- lien_sncf : lien avec ferroviaire, mobilité, transports ou SNCF
+- modele_eco : monétisation, pricing, SaaS, licence ou revenus mentionnés`;
+}
+
+/**
+ * Prompt complet pour la fin du pitch.
+ * Retourne les checks + les données pour pré-remplir le formulaire.
+ */
+function promptFull(txt) {
+  return `Tu es un expert en analyse de pitchs de startups pour l'équipe Innovation de SNCF à VivaTech 2026.
+Analyse ce pitch et extrais toutes les informations utiles.
+Réponds UNIQUEMENT avec du JSON valide (pas de texte avant ni après).
+
+Pitch complet :
+"""
+${txt}
+"""
+
+Format exact :
+{
+  "checks": {
+    "probleme": true,
+    "cible": false,
+    "solution": true,
+    "techno": false,
+    "differenciant": false,
+    "maturite": false,
+    "lien_sncf": false,
+    "modele_eco": false
+  },
+  "nom_solution": "nom de la startup ou solution (chaîne vide si non mentionné)",
+  "domaine": "exactement l'un de : Maintenance prédictive | Expérience voyageur | Décarbonation | Cybersécurité | Supply chain | RH / Formation | Infrastructure | Billettique | Autre",
+  "technologie": "exactement l'une de : IA / ML | IoT | Blockchain | Computer Vision | NLP | Robotique | Digital Twin | Data Analytics | Autre",
+  "maturite": "exactement l'un de : Idée | POC | MVP | Produit commercialisé | Scale-up",
+  "resume": "résumé factuel et enthousiaste du pitch en 2-3 phrases maximum, en français"
+}
+
+Critères de check (sois indulgent — si c'est implicitement présent, marque true) :
+- probleme : problème, douleur ou défi existant
+- cible : cible client/utilisateur identifiable
+- solution : produit, service ou approche décrit
+- techno : technologie ou innovation mentionnée
+- differenciant : avantage différenciant vs l'existant ou la concurrence
+- maturite : stade de développement mentionné (idée/POC/MVP/…)
+- lien_sncf : lien avec ferroviaire, mobilité, transports, SNCF
+- modele_eco : monétisation, pricing, SaaS, licence, revenus`;
+}
+
+
+/* ----------------------------------------------------------------
+   TRANSITION → SCREEN 2 (Vérifiez et complétez)
+   ---------------------------------------------------------------- */
+function goReview() {
+  const ai = S.ai;
+
+  // Pré-remplissage depuis les données Claude
+  $('f-solution').value = ai.nom_solution || '';
+  pickOpt('f-domaine',  ai.domaine);
+  pickOpt('f-techno',   ai.technologie);
+  pickOpt('f-maturite', ai.maturite);
+  $('f-resume').value = ai.resume || '';
+
+  // Score pill
+  const n = checkedCount();
+  $('score-txt').textContent = `${n}/8 points couverts`;
+
+  // Checklist récap
+  buildCL('cl2');
+  show('screen-review');
+
+  // Message bienveillant si incomplet (JAMAIS culpabilisant)
+  if (n < 8) {
+    toast(
+      `Pas d'inquiétude — ${n}/8 points couverts. Vous pouvez compléter ci-dessous !`,
+      '', 5000
+    );
+  }
+}
+
+// Sélectionne l'option correspondante dans un <select>
+function pickOpt(id, val) {
+  if (!val) return;
+  const sel = $(id);
+  for (const opt of sel.options) {
+    if (opt.value === val || opt.text === val) { sel.value = opt.value; return; }
+  }
+  // Fallback si la valeur ne correspond à aucune option connue
+  const autre = sel.querySelector('option[value="Autre"]');
+  if (autre) sel.value = 'Autre';
+}
+
+
+/* ----------------------------------------------------------------
+   FORM VALIDATION & SUBMISSION
+   ---------------------------------------------------------------- */
+function validate() {
+  const nom    = $('f-nom').value.trim();
+  const soc    = $('f-entreprise').value.trim();
+  const mail   = $('f-email').value.trim();
+  const mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
+  setErr('err-nom',        !nom);
+  setErr('err-entreprise', !soc);
+  setErr('err-email',      !mailOk);
+  return nom && soc && mailOk;
+}
+function setErr(id, show) { $(id).classList.toggle('on', show); }
+
+async function submitPitch() {
+  if (!validate()) return;
+
+  const btn = $('btn-submit');
+  btn.disabled    = true;
+  btn.textContent = 'Envoi en cours…';
+
+  const payload = buildPayload();
+  showOverlay('Envoi de votre pitch…');
+
+  let sent = false;
+  try {
+    // mode 'no-cors' : fire-and-forget vers webhooks sans CORS headers
+    await fetch(SUBMIT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+      mode:    'no-cors',
+    });
+    sent = true;
+  } catch(e) {
+    console.error('[Submit]', e);
+  }
+
+  hideOverlay();
+
+  if (!sent) {
+    // Fallback : copier le JSON dans le presse-papier
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+      toast('Envoi échoué — données copiées dans le presse-papier.', 'bad', 6000);
+    } catch {
+      toast('Envoi échoué. Contactez l\'animateur du stand.', 'bad', 6000);
+    }
+    btn.disabled    = false;
+    btn.textContent = 'Envoyer mon pitch 🚀';
+    return;
+  }
+
+  goThanks(payload);
+}
+
+function buildPayload() {
+  return {
+    timestamp: new Date().toISOString(),
+    source:    'PitchExpress_VivaTech2026',
+    contact: {
+      nom:         $('f-nom').value.trim(),
+      entreprise:  $('f-entreprise').value.trim(),
+      email:       $('f-email').value.trim(),
+      telephone:   $('f-tel').value.trim(),
+      url:         $('f-url').value.trim(),
+    },
+    solution: {
+      nom:         $('f-solution').value.trim(),
+      domaine:     $('f-domaine').value,
+      technologie: $('f-techno').value,
+      maturite:    $('f-maturite').value,
+    },
+    pitch: {
+      transcription:       liveText(),
+      resume:              $('f-resume').value.trim(),
+      questions_couvertes: checkedCount(),
+      questions_total:     ITEMS.length,
+      checklist: Object.fromEntries(ITEMS.map(i => [i.id, S.checks[i.id]])),
+    },
+  };
+}
+
+
+/* ----------------------------------------------------------------
+   TRANSITION → SCREEN 3 (Merci !)
+   ---------------------------------------------------------------- */
+function goThanks(payload) {
+  const prenom = payload.contact.nom.split(' ')[0] || payload.contact.nom;
+  $('thanks-name').textContent = prenom;
+
+  const n = payload.pitch.questions_couvertes;
+  $('t-score').textContent = n;
+
+  // Messages d'encouragement calibrés selon le score (jamais négatifs)
+  const msgs = [
+    'Merci d\'avoir participé ! L\'équipe SNCF sera ravie d\'en apprendre plus.',
+    'Merci pour votre partage — quelques éléments à compléter lors de l\'échange.',
+    'Pitch concis — n\'hésitez pas à développer lors de la conversation.',
+    'Bon début — l\'équipe a hâte d\'en savoir plus sur votre projet.',
+    'Pitch solide — encore quelques points à préciser.',
+    'Bon pitch, avec quelques axes à approfondir.',
+    'Très bon pitch, bien structuré !',
+    'Excellent pitch, quasi parfait !',
+    'Pitch parfait — tous les points couverts ! 🎯',
+  ];
+  $('t-encourage').textContent = msgs[Math.min(n, 8)];
+
+  show('screen-thanks');
+}
+
+
+/* ----------------------------------------------------------------
+   RESET — pour le visiteur suivant
+   ---------------------------------------------------------------- */
+function reset() {
+  // State
+  S.transcript      = '';
+  S.interim         = '';
+  S.recording       = false;
+  S.timeLeft        = PITCH_DURATION;
+  S.ai              = {};
+  S.lastAnalyzedLen = 0;
+  ITEMS.forEach(i => { S.checks[i.id] = false; });
+
+  // Screen 1
+  $('timer-wrap').classList.add('hidden');
+  $('timer-bar').style.width  = '100%';
+  $('timer-bar').className    = 'timer-bar';
+  $('timer-count').textContent = '1:30';
+  $('btn-finish').style.display = 'none';
+  $('ico-mic').classList.remove('hidden');
+  $('ico-stop').classList.add('hidden');
+  $('mic-label').textContent = 'Appuyer pour pitcher';
+  $('mic-label').classList.remove('rec');
+  $('btn-mic').classList.remove('recording');
+  qa('.pulse-ring').forEach(r => r.style.display = '');
+  qa('.wave-ring').forEach(r  => r.style.display = 'none');
+  $('transcript-ph').classList.remove('hidden');
+  $('transcript-txt').classList.add('hidden');
+  $('transcript-txt').innerHTML = '';
+  $('manual-text').value = '';
+
+  // Screen 2
+  ['f-solution','f-domaine','f-techno','f-maturite','f-resume',
+   'f-nom','f-entreprise','f-email','f-tel','f-url'].forEach(id => {
+    const el = $(id);
+    if (el) el.value = '';
+  });
+  setErr('err-nom',        false);
+  setErr('err-entreprise', false);
+  setErr('err-email',      false);
+  $('btn-submit').disabled    = false;
+  $('btn-submit').textContent = 'Envoyer mon pitch 🚀';
+
+  buildCL('cl1');
+  show('screen-pitch');
+}
+
+
+/* ----------------------------------------------------------------
+   EVENTS
+   ---------------------------------------------------------------- */
+$('btn-mic').addEventListener('click', async () => {
+  if (S.recording) {
+    await finishPitch();
+  } else {
+    await requireKey();
+    if (!S.apiKey) return;
+    await startRecording();
+  }
+});
+
+$('btn-finish').addEventListener('click', finishPitch);
+$('btn-submit').addEventListener('click', submitPitch);
+$('btn-restart').addEventListener('click', reset);
+
+// Validation inline (feedback immédiat)
+$('f-nom').addEventListener('input',        () => setErr('err-nom',        !$('f-nom').value.trim()));
+$('f-entreprise').addEventListener('input', () => setErr('err-entreprise', !$('f-entreprise').value.trim()));
+$('f-email').addEventListener('input', () => {
+  const v = $('f-email').value.trim();
+  setErr('err-email', v.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+});
+
+
+/* ----------------------------------------------------------------
+   INIT
+   ---------------------------------------------------------------- */
+initSpeech();
+buildCL('cl1');
+loadKey(); // absorbe silencieusement ?key= si présent dans l'URL
+</script>
+</body>
 </html>
