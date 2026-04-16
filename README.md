@@ -1,73 +1,167 @@
-# React + TypeScript + Vite
+# NOVA — Pitch Intelligence
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Fabrique de l'Adoption Numérique (FAN) × SNCF × VivaTech 2026**
 
-Currently, two official plugins are available:
+Outil de capture et d'analyse de pitchs en temps réel, propulsé par Claude (Anthropic). Conçu pour les événements d'innovation SNCF : chaque participant dispose de 90 secondes pour pitcher sa solution, l'IA vérifie en direct les 8 points essentiels d'un bon pitch et pré-remplit automatiquement la fiche de contact.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Fonctionnement
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+NOVA est un **fichier HTML unique, zéro dépendance**, déployable sur n'importe quel hébergeur statique.
 
-## Expanding the ESLint configuration
+### Flux utilisateur
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+1. Saisie de la clé API Anthropic (ou pré-configurée via ?key=)
+2. Appui sur le bouton micro → démarrage de l'enregistrement (90 s)
+3. Transcription en direct (Web Speech API)
+4. L'IA analyse le pitch en temps réel (toutes les 20 s)
+5. La checklist se coche automatiquement au fil du discours
+6. À la fin : analyse complète Claude → pré-remplissage du formulaire
+7. Vérification et complétion des informations par le pitcheur
+8. Saisie des coordonnées → envoi vers le webhook configuré
+9. Écran de remerciement personnalisé avec le score /8
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Les 8 points essentiels vérifiés
+
+| # | Point | Question |
+|---|-------|----------|
+| 1 | Problème | Quel problème résolvez-vous ? |
+| 2 | Cible | Pour qui ? (client cible / utilisateur) |
+| 3 | Solution | Quelle est votre solution ? |
+| 4 | Technologie | Quelle technologie / innovation clé ? |
+| 5 | Différenciant | Quel est votre avantage concurrentiel ? |
+| 6 | Maturité | Quel stade de maturité ? |
+| 7 | Lien SNCF | Quel lien avec le ferroviaire / SNCF ? |
+| 8 | Modèle éco. | Quel est votre modèle économique ? |
+
+---
+
+## Configuration avant déploiement
+
+Ouvrir `index.html` et modifier les constantes en haut du bloc `<script>` :
 
 ```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+// Endpoint de réception des données (webhook)
+const SUBMIT_URL = 'https://your-endpoint.example.com/submit';
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+// Modèle Claude utilisé
+const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+
+// Durée maximale du pitch (secondes)
+const PITCH_DURATION = 90;
+
+// Intervalle d'analyse partielle (secondes) — 0 pour désactiver
+const PARTIAL_INTERVAL = 20;
 ```
+
+### Webhooks compatibles
+
+- **Google Forms** : `https://docs.google.com/forms/d/e/XXXXX/formResponse`
+- **Tally.so** : `https://tally.so/r/XXXXX`
+- **Make** : `https://hook.eu1.make.com/XXXXX`
+- **Power Automate** : `https://prod-xx.westeurope.logic.azure.com/workflows/XXXXX`
+- **n8n** : `https://your-n8n.com/webhook/XXXXX`
+
+---
+
+## Clé API Anthropic — BYOK
+
+NOVA utilise le pattern **BYOK (Bring Your Own Key)**. La clé n'est jamais persistée côté serveur.
+
+### Priorité de résolution
+
+1. **Paramètre URL** `?key=sk-ant-xxx` — retiré de l'URL après lecture (sécurité)
+2. **SessionStorage** — survit à un rechargement, disparaît à la fermeture du navigateur
+3. **Modal de saisie** — affiché si aucune clé n'est trouvée
+
+### Pré-configuration pour l'animateur du stand
+
+Générer le QR code depuis l'URL suivante pour éviter la saisie manuelle :
+
+```
+https://votre-domaine.com/nova?key=sk-ant-api03-VOTRE_CLE_ICI
+```
+
+---
+
+## Structure du payload
+
+Données envoyées au webhook à chaque soumission :
+
+```json
+{
+  "timestamp": "2026-05-22T10:32:00.000Z",
+  "source": "NOVA_VivaTech2026",
+  "contact": {
+    "nom": "Prénom Nom",
+    "entreprise": "Ma Startup SAS",
+    "email": "contact@startup.com",
+    "telephone": "+33 6 00 00 00 00",
+    "url": "https://startup.com"
+  },
+  "solution": {
+    "nom": "RailSense",
+    "domaine": "Maintenance prédictive",
+    "technologie": "IA / ML",
+    "maturite": "MVP"
+  },
+  "pitch": {
+    "transcription": "Texte complet du pitch…",
+    "resume": "Résumé en 2-3 phrases généré par l'IA…",
+    "questions_couvertes": 7,
+    "questions_total": 8,
+    "checklist": {
+      "probleme": true,
+      "cible": true,
+      "solution": true,
+      "techno": true,
+      "differenciant": true,
+      "maturite": true,
+      "lien_sncf": true,
+      "modele_eco": false
+    }
+  }
+}
+```
+
+---
+
+## Déploiement
+
+### GitHub Pages (configuration actuelle)
+
+Le fichier `.github/workflows/deploy.yml` déploie automatiquement `index.html` sur GitHub Pages à chaque push sur `main`.
+
+### Autres hébergeurs statiques
+
+Copier `index.html` sur n'importe quel hébergeur statique (Netlify, Vercel, Azure Static Web Apps, un simple serveur web). Aucun build nécessaire.
+
+---
+
+## Compatibilité navigateurs
+
+| Navigateur | Transcription vocale | Saisie manuelle |
+|------------|---------------------|-----------------|
+| Chrome / Edge | Oui (Web Speech API) | Oui (fallback) |
+| Safari (iOS/macOS) | Oui | Oui (fallback) |
+| Firefox | Non | Oui (fallback automatique) |
+| Android Chrome | Oui | Oui (fallback) |
+
+---
+
+## Stack technique
+
+- **Frontend** : Vanilla JS (ES6+), zéro dépendance
+- **IA** : API Anthropic (Claude) — appels directs depuis le navigateur
+- **Transcription** : Web Speech API (natif navigateur)
+- **Design** : Charte graphique FAN (Fabrique de l'Adoption Numérique)
+- **Déploiement** : GitHub Pages via GitHub Actions
+
+---
+
+## Fabrique de l'Adoption Numérique
+
+NOVA est un outil produit par la **Fabrique de l'Adoption Numérique (FAN)**, entité de e.SNCF Solutions / Direction Numérique Groupe SNCF.

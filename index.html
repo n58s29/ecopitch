@@ -6,52 +6,122 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#00205b">
-  <title>PitchExpress — SNCF × VivaTech 2026</title>
+  <title>NOVA — Pitch Intelligence</title>
   <style>
     /* ================================================================
-       DESIGN SYSTEM — FAN / e.SNCF Solutions
-       Palette : navy #00205b · cerulean #0084d4 · amber #eed484
-                 mint #00b388 · ochre #dc582a · white #ffffff
-       Typographie : Avenir Next / Avenir / Arial, poids max 500
+       DESIGN SYSTEM — Fabrique de l'Adoption Numérique (FAN)
+       Mode sombre — outil de pitch / présentation événementielle
+       Typographie : Avenir / Avenir Next / Arial, poids max 500
        ================================================================ */
     :root {
-      --navy:     #00205b;
-      --cerulean: #0084d4;
-      --amber:    #eed484;
-      --mint:     #00b388;
-      --ochre:    #dc582a;
-      --white:    #ffffff;
+      /* === Couleurs structurelles === */
+      --primaire:            #001b44;
+      --primaire-conteneur:  #123062;
+      --sur-primaire:        #ffffff;
+      --sur-primaire-conteneur: #d1e0f0;
 
-      --text-primary:   rgba(255,255,255,1);
-      --text-secondary: rgba(255,255,255,0.7);
-      --text-muted:     rgba(255,255,255,0.42);
-      --surface:        rgba(255,255,255,0.06);
-      --surface-hover:  rgba(255,255,255,0.10);
-      --border:         rgba(255,255,255,0.11);
+      /* === Surfaces mode sombre === */
+      --sombre-fond:         #00205b;
+      --sombre-fond-moyen:   #001440;
+      --sombre-fond-profond: #000d2e;
 
-      --radius-card: 14px;
-      --radius-pill: 2rem;
-      --transition:  0.2s ease;
-      --font: 'Avenir Next', 'Avenir', Arial, sans-serif;
+      /* === Accents fonctionnels === */
+      --cerulean:    #0088cc;
+      --ambre:       #eed484;
+      --menthe:      #00b388;
+      --lavande:     #8374d1;
+      --ocre:        #dc582a;
+      --bleu-horizon: #a4c8e1;
+
+      /* === Texte (dark mode) === */
+      --texte-primaire:   rgba(255, 255, 255, 1);
+      --texte-secondaire: rgba(255, 255, 255, 0.68);
+      --texte-muet:       rgba(255, 255, 255, 0.40);
+
+      /* === Cartes mode sombre === */
+      --carte-fond:       rgba(255, 255, 255, 0.04);
+      --carte-bord:       rgba(255, 255, 255, 0.08);
+      --carte-fond-hover: rgba(255, 255, 255, 0.07);
+      --carte-bord-hover: rgba(255, 255, 255, 0.15);
+
+      /* === Typographie === */
+      --police-display: 'Avenir', 'Avenir Next', sans-serif;
+      --police-corps:   'Avenir', 'Avenir Next', Arial, sans-serif;
+
+      /* === Tokens utilitaires === */
+      --transition: 0.2s ease;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html { scroll-behavior: smooth; }
+
     body {
       min-height: 100dvh;
-      background: var(--navy);
-      color: var(--text-primary);
-      font-family: var(--font);
-      font-weight: 400;
+      background: var(--sombre-fond);
+      color: var(--texte-primaire);
+      font-family: var(--police-corps);
+      font-weight: 300;
+      line-height: 1.65;
       overflow-x: hidden;
     }
 
-    /* ---- Screens ---- */
+    /* ================================================================
+       TOPBAR — identité NOVA
+       ================================================================ */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 44px;
+      background: rgba(0, 32, 91, 0.97);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      padding: 0 1.25rem;
+      justify-content: space-between;
+    }
+
+    .topbar-logo {
+      font-family: var(--police-display);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--sur-primaire);
+      letter-spacing: 0.06em;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--police-corps);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--bleu-horizon);
+    }
+
+    .point-vivant {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cerulean);
+      animation: pulseDot 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
+    /* ================================================================
+       SCREENS
+       ================================================================ */
     .screen {
       display: none;
       min-height: 100dvh;
-      padding: 1.5rem 1.25rem 2.5rem;
+      padding: 3.75rem 1.25rem 2.5rem; /* compte la topbar 44px */
       flex-direction: column;
       animation: fadeIn 0.28s ease;
     }
@@ -62,14 +132,16 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ---- Badge ---- */
+    /* ================================================================
+       BADGE — étiquette de section (pill)
+       ================================================================ */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: rgba(0,132,212,0.18);
-      border: 1px solid rgba(0,132,212,0.35);
-      border-radius: var(--radius-pill);
+      background: rgba(0, 136, 204, 0.12);
+      border: 1px solid rgba(0, 136, 204, 0.28);
+      border-radius: 2rem;
       padding: 0.28rem 0.75rem;
       font-size: 0.68rem;
       font-weight: 500;
@@ -87,40 +159,53 @@
       flex-shrink: 0;
     }
 
-    /* ---- Typography ---- */
+    /* ================================================================
+       TYPOGRAPHIE
+       ================================================================ */
     h1 {
+      font-family: var(--police-display);
       font-size: clamp(1.45rem, 5vw, 1.9rem);
       font-weight: 500;
       line-height: 1.22;
+      letter-spacing: -0.02em;
+      color: var(--sur-primaire);
       margin-bottom: 0.45rem;
     }
+
     h2 {
+      font-family: var(--police-display);
       font-size: 1.1rem;
       font-weight: 500;
+      letter-spacing: -0.01em;
       margin-bottom: 0.65rem;
     }
+
     .subtitle {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
+      font-size: 0.875rem;
+      color: var(--texte-secondaire);
       font-weight: 300;
       line-height: 1.55;
     }
+
     .section-label {
-      font-size: 0.7rem;
+      font-size: 11px;
       font-weight: 500;
-      color: var(--text-muted);
+      color: var(--texte-muet);
       text-transform: uppercase;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.08em;
       margin-bottom: 0.5rem;
       margin-top: 0.25rem;
     }
 
-    /* ---- Card ---- */
+    /* ================================================================
+       CARTE SOMBRE (mode vitrine/pitch)
+       ================================================================ */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
+      background: var(--carte-fond);
+      border: 1px solid var(--carte-bord);
+      border-radius: 14px;
       padding: 0.9rem 1rem;
+      transition: background var(--transition), border-color var(--transition);
     }
 
     /* ================================================================
@@ -128,40 +213,45 @@
        ================================================================ */
     #screen-pitch .hd { margin-bottom: 1.25rem; }
 
-    /* Timer */
-    #timer-wrap {
-      margin-bottom: 0.85rem;
-    }
+    /* Minuteur */
+    #timer-wrap { margin-bottom: 0.85rem; }
+
     .timer-bar-bg {
-      height: 5px;
-      background: var(--border);
-      border-radius: 3px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
       overflow: hidden;
     }
     .timer-bar {
       height: 100%;
       width: 100%;
       background: var(--cerulean);
-      border-radius: 3px;
+      border-radius: 2px;
       transition: width 1s linear, background 0.35s;
     }
-    .timer-bar.warning { background: var(--amber); }
-    .timer-bar.danger  { background: var(--ochre); }
+    .timer-bar.warning { background: var(--ambre); }
+    .timer-bar.danger  { background: var(--ocre); }
+
     .timer-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-top: 0.3rem;
+      margin-top: 0.35rem;
     }
-    .timer-hint { font-size: 0.73rem; color: var(--text-muted); }
+    .timer-hint {
+      font-size: 0.73rem;
+      font-weight: 300;
+      color: var(--texte-muet);
+    }
     #timer-count {
       font-size: 1.25rem;
       font-weight: 500;
-      color: var(--white);
+      color: var(--sur-primaire);
+      letter-spacing: -0.01em;
       font-variant-numeric: tabular-nums;
     }
 
-    /* Mic zone */
+    /* Zone microphone */
     .mic-zone {
       display: flex;
       flex-direction: column;
@@ -177,12 +267,12 @@
       margin-bottom: 0.55rem;
     }
 
-    /* Idle pulse rings */
+    /* Anneaux idle (cerulean) */
     .pulse-ring {
       position: absolute;
       width: 88px; height: 88px;
       border-radius: 50%;
-      border: 1.5px solid rgba(0,132,212,0.45);
+      border: 1.5px solid rgba(0, 136, 204, 0.38);
       animation: pulseIdle 2.2s ease-out infinite;
     }
     .pulse-ring:nth-child(2) { animation-delay: 0.7s; }
@@ -192,13 +282,13 @@
       100% { transform: scale(2.0); opacity: 0; }
     }
 
-    /* Recording wave rings */
+    /* Anneaux enregistrement (menthe) */
     .wave-ring {
       display: none;
       position: absolute;
       width: 88px; height: 88px;
       border-radius: 50%;
-      background: rgba(0,179,136,0.12);
+      background: rgba(0, 179, 136, 0.10);
       animation: waveAnim 1.4s ease-out infinite;
     }
     .wave-ring:nth-child(5) { animation-delay: 0.35s; }
@@ -221,23 +311,24 @@
       align-items: center;
       justify-content: center;
       transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
-      box-shadow: 0 0 0 7px rgba(0,132,212,0.18), 0 8px 28px rgba(0,0,0,0.32);
+      box-shadow: 0 0 0 7px rgba(0, 136, 204, 0.14), 0 8px 28px rgba(0, 0, 0, 0.30);
     }
     #btn-mic:active { transform: scale(0.94); }
     #btn-mic.recording {
-      background: var(--mint);
-      box-shadow: 0 0 0 7px rgba(0,179,136,0.18), 0 8px 28px rgba(0,0,0,0.32);
+      background: var(--menthe);
+      box-shadow: 0 0 0 7px rgba(0, 179, 136, 0.14), 0 8px 28px rgba(0, 0, 0, 0.30);
     }
     #btn-mic svg { width: 34px; height: 34px; }
 
     .mic-label {
       font-size: 0.78rem;
-      color: var(--text-muted);
+      font-weight: 300;
+      color: var(--texte-muet);
       transition: color var(--transition);
     }
-    .mic-label.rec { color: var(--mint); }
+    .mic-label.rec { color: var(--menthe); }
 
-    /* Transcript */
+    /* Transcription */
     .transcript-card {
       min-height: 72px;
       max-height: 120px;
@@ -245,61 +336,79 @@
       margin-bottom: 0.7rem;
       scroll-behavior: smooth;
     }
-    .transcript-card p { font-size: 0.84rem; line-height: 1.6; color: var(--text-secondary); }
-    .transcript-card .ph { color: var(--text-muted); font-style: italic; font-size: 0.8rem; }
+    .transcript-card p {
+      font-size: 0.84rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--texte-secondaire);
+    }
+    .transcript-card .ph {
+      color: var(--texte-muet);
+      font-style: italic;
+      font-size: 0.8rem;
+    }
 
-    /* Manual fallback */
+    /* Saisie manuelle (fallback) */
     #manual-wrap { margin-bottom: 0.7rem; }
     #manual-wrap .note {
       font-size: 0.78rem;
-      color: var(--text-secondary);
+      font-weight: 300;
+      color: var(--texte-secondaire);
       margin-bottom: 0.4rem;
     }
     #manual-text {
       width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      color: var(--white);
-      font-family: var(--font);
+      background: var(--carte-fond);
+      border: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px 4px 0 0;
+      color: var(--sur-primaire);
+      font-family: var(--police-corps);
       font-size: 0.84rem;
+      font-weight: 300;
       padding: 0.7rem 0.85rem;
       resize: none;
       min-height: 90px;
       outline: none;
-      transition: border-color var(--transition);
+      transition: border-bottom-color var(--transition);
     }
-    #manual-text:focus { border-color: var(--cerulean); }
-    #manual-text::placeholder { color: var(--text-muted); }
+    #manual-text:focus { border-bottom-color: var(--cerulean); }
+    #manual-text::placeholder { color: var(--texte-muet); }
 
     /* Checklist */
     .checklist-hd {
-      font-size: 0.73rem;
+      font-size: 11px;
       font-weight: 500;
-      color: var(--text-muted);
+      color: var(--texte-muet);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       margin-bottom: 0.45rem;
     }
-    .checklist { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.8rem; }
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-bottom: 0.8rem;
+    }
 
     .check-item {
       display: flex;
       align-items: center;
       gap: 0.6rem;
       padding: 0.48rem 0.75rem;
-      border-radius: 9px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--carte-fond);
+      border: 1px solid var(--carte-bord);
       font-size: 0.8rem;
-      color: var(--text-secondary);
+      font-weight: 300;
+      color: var(--texte-secondaire);
       transition: background var(--transition), border-color var(--transition), color var(--transition);
     }
     .check-item.checked {
-      background: rgba(0,179,136,0.11);
-      border-color: rgba(0,179,136,0.28);
-      color: var(--text-primary);
-      animation: checkPop 0.38s cubic-bezier(0.34,1.56,0.64,1);
+      background: rgba(0, 179, 136, 0.10);
+      border-color: rgba(0, 179, 136, 0.24);
+      color: var(--texte-primaire);
+      animation: checkPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     @keyframes checkPop {
       0%   { transform: scale(1); }
@@ -308,9 +417,9 @@
     }
     .chk-icon {
       flex-shrink: 0;
-      width: 19px; height: 19px;
+      width: 18px; height: 18px;
       border-radius: 50%;
-      border: 1.5px solid rgba(255,255,255,0.22);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -319,31 +428,33 @@
       transition: all var(--transition);
     }
     .check-item.checked .chk-icon {
-      background: var(--mint);
-      border-color: var(--mint);
+      background: var(--menthe);
+      border-color: var(--menthe);
       color: #fff;
     }
 
-    /* Finish button */
+    /* Bouton — terminer le pitch */
     #btn-finish {
       display: none;
       width: 100%;
-      padding: 0.82rem;
-      border-radius: var(--radius-pill);
+      padding: 0.82rem 1.5rem;
+      border-radius: 0.375rem;
       border: none;
-      background: var(--cerulean);
-      color: #fff;
-      font-family: var(--font);
-      font-size: 0.94rem;
+      background: var(--primaire-conteneur);
+      color: var(--sur-primaire-conteneur);
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
       font-weight: 500;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      transition: opacity var(--transition);
+      transition: background var(--transition), transform var(--transition);
       margin-top: auto;
     }
-    #btn-finish:active { opacity: 0.82; }
+    #btn-finish:hover  { background: var(--cerulean); color: var(--sur-primaire); }
+    #btn-finish:active { transform: scale(0.98); }
 
     /* ================================================================
-       SCREEN 2 — REVIEW
+       SCREEN 2 — VÉRIFICATION
        ================================================================ */
     #screen-review .hd { margin-bottom: 0.9rem; }
 
@@ -351,13 +462,13 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: rgba(238,212,132,0.13);
-      border: 1px solid rgba(238,212,132,0.28);
-      border-radius: var(--radius-pill);
+      background: rgba(238, 212, 132, 0.08);
+      border: 1px solid rgba(238, 212, 132, 0.22);
+      border-radius: 2rem;
       padding: 0.28rem 0.75rem;
       font-size: 0.76rem;
-      color: var(--amber);
       font-weight: 500;
+      color: var(--ambre);
       margin-bottom: 0.85rem;
     }
 
@@ -365,22 +476,25 @@
     .field-group label {
       display: block;
       font-size: 0.76rem;
-      color: var(--text-secondary);
+      font-weight: 400;
+      color: var(--texte-secondaire);
       margin-bottom: 0.28rem;
     }
     .field-group input,
     .field-group select,
     .field-group textarea {
       width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--white);
-      font-family: var(--font);
-      font-size: 0.87rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.11);
+      border-radius: 4px 4px 0 0;
+      color: var(--sur-primaire);
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
+      font-weight: 300;
       padding: 0.62rem 0.82rem;
       outline: none;
-      transition: border-color var(--transition);
+      transition: background var(--transition), border-bottom-color var(--transition);
       -webkit-appearance: none;
       appearance: none;
     }
@@ -388,45 +502,53 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath fill='%23ffffff55' d='M5.5 7L0 0h11z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 0.82rem center;
+      background-color: rgba(255, 255, 255, 0.05);
       padding-right: 2rem;
     }
-    .field-group select option { background: #001844; color: #fff; }
+    .field-group select option { background: var(--sombre-fond-moyen); color: #fff; }
     .field-group input:focus,
     .field-group select:focus,
-    .field-group textarea:focus { border-color: var(--cerulean); }
+    .field-group textarea:focus {
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom-color: var(--cerulean);
+    }
     .field-group input::placeholder,
-    .field-group textarea::placeholder { color: var(--text-muted); }
+    .field-group textarea::placeholder { color: var(--texte-muet); }
     .field-group textarea { resize: none; min-height: 78px; line-height: 1.55; }
 
-    .lbl-req::after { content: ' *'; color: var(--ochre); }
+    .lbl-req::after { content: ' *'; color: var(--ocre); }
 
     .err-msg {
       font-size: 0.73rem;
-      color: var(--ochre);
+      font-weight: 400;
+      color: var(--ocre);
       margin-top: 0.22rem;
       display: none;
     }
     .err-msg.on { display: block; }
 
+    /* Bouton — soumettre */
     #btn-submit {
       width: 100%;
-      padding: 0.92rem;
-      border-radius: var(--radius-pill);
+      padding: 0.92rem 1.5rem;
+      border-radius: 0.375rem;
       border: none;
       background: var(--cerulean);
-      color: #fff;
-      font-family: var(--font);
-      font-size: 0.97rem;
+      color: var(--sur-primaire);
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
       font-weight: 500;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      transition: opacity var(--transition), transform var(--transition);
+      transition: background var(--transition), transform var(--transition);
       margin-top: 0.5rem;
     }
-    #btn-submit:active { transform: scale(0.98); opacity: 0.88; }
+    #btn-submit:hover   { background: var(--primaire-conteneur); }
+    #btn-submit:active  { transform: scale(0.98); }
     #btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
 
     /* ================================================================
-       SCREEN 3 — THANK YOU
+       SCREEN 3 — MERCI
        ================================================================ */
     #screen-thanks {
       align-items: center;
@@ -434,63 +556,96 @@
       text-align: center;
       gap: 1.6rem;
     }
+
     .thanks-icon {
       width: 78px; height: 78px;
       border-radius: 50%;
-      background: rgba(0,179,136,0.14);
-      border: 2px solid var(--mint);
+      background: rgba(0, 179, 136, 0.10);
+      border: 2px solid var(--menthe);
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: successPop 0.48s cubic-bezier(0.34,1.56,0.64,1);
+      animation: successPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     @keyframes successPop {
       0%   { transform: scale(0); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-    .thanks-icon svg { width: 38px; height: 38px; color: var(--mint); }
+    .thanks-icon svg { width: 38px; height: 38px; color: var(--menthe); }
 
     .score-display {
-      background: rgba(238,212,132,0.09);
-      border: 1px solid rgba(238,212,132,0.22);
-      border-radius: var(--radius-card);
+      background: rgba(238, 212, 132, 0.06);
+      border: 1px solid rgba(238, 212, 132, 0.18);
+      border-radius: 14px;
       padding: 1.1rem 2rem;
       width: 100%;
     }
     .score-num {
+      font-family: var(--police-display);
       font-size: 2.6rem;
       font-weight: 500;
-      color: var(--amber);
+      letter-spacing: -0.02em;
+      color: var(--ambre);
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
-    .score-denom { font-size: 1.1rem; color: var(--text-muted); }
-    .score-lbl { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.3rem; }
+    .score-denom { font-size: 1.1rem; color: var(--texte-muet); font-weight: 300; }
+    .score-lbl   { font-size: 0.82rem; font-weight: 300; color: var(--texte-secondaire); margin-top: 0.3rem; }
 
+    /* Bouton — nouveau pitch */
     #btn-restart {
       width: 100%;
       max-width: 260px;
-      padding: 0.88rem;
-      border-radius: var(--radius-pill);
+      padding: 0.88rem 1.5rem;
+      border-radius: 0.375rem;
       border: 1.5px solid var(--cerulean);
       background: transparent;
       color: var(--cerulean);
-      font-family: var(--font);
-      font-size: 0.94rem;
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
       font-weight: 500;
+      letter-spacing: 0.01em;
       cursor: pointer;
       transition: background var(--transition), color var(--transition);
     }
+    #btn-restart:hover  { background: var(--cerulean); color: var(--sur-primaire); }
     #btn-restart:active { background: var(--cerulean); color: #fff; }
 
+    /* Pied de page FAN */
+    .fan-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .fan-footer-filet {
+      width: 160px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cerulean), var(--ambre), var(--menthe));
+      margin: 0 auto 1rem;
+      border-radius: 2px;
+    }
+    .fan-footer-titre {
+      font-family: var(--police-display);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--ambre);
+      letter-spacing: 0.02em;
+    }
+    .fan-footer-sous {
+      font-family: var(--police-corps);
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.30);
+      margin-top: 0.25rem;
+    }
+
     /* ================================================================
-       API KEY MODAL (bottom sheet)
+       MODAL — clé API (bottom sheet)
        ================================================================ */
     .modal-bg {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0, 0, 0, 0.55);
       backdrop-filter: blur(5px);
       z-index: 200;
       align-items: flex-end;
@@ -499,9 +654,9 @@
     }
     .modal-bg.open { display: flex; }
     .modal-sheet {
-      background: #071b45;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      background: var(--sombre-fond-moyen);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 14px 14px 0 0;
       padding: 1.5rem 1.25rem 2rem;
       width: 100%;
       max-width: 480px;
@@ -511,47 +666,64 @@
       from { transform: translateY(100%); opacity: 0; }
       to   { transform: translateY(0);    opacity: 1; }
     }
-    .modal-sheet h2 { font-size: 1rem; font-weight: 500; margin-bottom: 0.45rem; }
-    .modal-sheet p  { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.9rem; line-height: 1.55; }
+    .modal-sheet h2 {
+      font-family: var(--police-display);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.45rem;
+    }
+    .modal-sheet p {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--texte-secondaire);
+      margin-bottom: 0.9rem;
+      line-height: 1.55;
+    }
     #input-api-key {
       width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--white);
-      font-family: var(--font);
-      font-size: 0.87rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px 4px 0 0;
+      color: var(--sur-primaire);
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
+      font-weight: 300;
       padding: 0.68rem 0.9rem;
       outline: none;
       margin-bottom: 0.7rem;
-      transition: border-color var(--transition);
+      transition: border-bottom-color var(--transition);
     }
-    #input-api-key:focus { border-color: var(--cerulean); }
-    #input-api-key::placeholder { color: var(--text-muted); }
+    #input-api-key:focus { border-bottom-color: var(--cerulean); }
+    #input-api-key::placeholder { color: var(--texte-muet); }
+
     #btn-save-key {
       width: 100%;
-      padding: 0.82rem;
-      border-radius: var(--radius-pill);
+      padding: 0.82rem 1.5rem;
+      border-radius: 0.375rem;
       border: none;
       background: var(--cerulean);
-      color: #fff;
-      font-family: var(--font);
-      font-size: 0.94rem;
+      color: var(--sur-primaire);
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
       font-weight: 500;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      transition: opacity var(--transition);
+      transition: background var(--transition);
     }
+    #btn-save-key:hover  { background: var(--primaire-conteneur); }
     #btn-save-key:active { opacity: 0.82; }
 
     /* ================================================================
-       ANALYZING OVERLAY
+       OVERLAY — analyse en cours
        ================================================================ */
     #overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,32,91,0.82);
-      backdrop-filter: blur(7px);
+      background: rgba(0, 32, 91, 0.88);
+      backdrop-filter: blur(8px);
       z-index: 150;
       align-items: center;
       justify-content: center;
@@ -559,30 +731,36 @@
       gap: 1rem;
     }
     #overlay.on { display: flex; }
+
     .spinner {
-      width: 46px; height: 46px;
-      border: 3px solid var(--border);
+      width: 42px; height: 42px;
+      border: 2.5px solid rgba(255, 255, 255, 0.10);
       border-top-color: var(--cerulean);
       border-radius: 50%;
       animation: spin 0.75s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    #overlay-msg { font-size: 0.88rem; color: var(--text-secondary); }
+    #overlay-msg {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--texte-secondaire);
+    }
 
     /* ================================================================
-       TOAST
+       TOAST — notification contextuelle
        ================================================================ */
     #toast {
       position: fixed;
       bottom: 1.4rem;
       left: 50%;
       transform: translateX(-50%) translateY(130%);
-      background: #071b45;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-pill);
+      background: var(--sombre-fond-moyen);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 0.375rem;
       padding: 0.58rem 1.15rem;
       font-size: 0.8rem;
-      color: var(--text-primary);
+      font-weight: 300;
+      color: var(--texte-primaire);
       z-index: 300;
       transition: transform 0.28s ease;
       white-space: nowrap;
@@ -592,21 +770,33 @@
       overflow: hidden;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
-    #toast.ok   { border-color: rgba(0,179,136,0.4); }
-    #toast.bad  { border-color: rgba(220,88,42,0.4); }
+    #toast.ok   { border-color: rgba(0, 179, 136, 0.35); }
+    #toast.bad  { border-color: rgba(220, 88, 42, 0.35); }
 
     /* ================================================================
-       UTILITIES
+       UTILITAIRES
        ================================================================ */
     .hidden { display: none !important; }
     .mt-auto { margin-top: auto; }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 2px; }
   </style>
 </head>
 <body>
+
+<!-- ================================================================
+     TOPBAR — identité NOVA / FAN
+     ================================================================ -->
+<header class="topbar" role="banner">
+  <span class="topbar-logo">NOVA</span>
+  <span class="eyebrow">
+    <span class="point-vivant"></span>
+    Fabrique de l'Adoption Numérique
+  </span>
+</header>
+
 
 <!-- ================================================================
      SCREEN 1 — PITCHEZ VOTRE SOLUTION
@@ -618,7 +808,7 @@
     <p class="subtitle">Pitchez votre solution — l'IA vérifie en temps réel que vous couvrez les points essentiels.</p>
   </div>
 
-  <!-- Countdown timer (hidden until recording starts) -->
+  <!-- Minuteur (masqué jusqu'au démarrage de l'enregistrement) -->
   <div id="timer-wrap" class="hidden">
     <div class="timer-bar-bg">
       <div id="timer-bar" class="timer-bar"></div>
@@ -629,26 +819,26 @@
     </div>
   </div>
 
-  <!-- Microphone button -->
+  <!-- Bouton microphone -->
   <div class="mic-zone">
     <div class="mic-btn-wrap">
-      <!-- Idle pulse rings (cerulean) -->
+      <!-- Anneaux idle (cerulean) -->
       <div class="pulse-ring"></div>
       <div class="pulse-ring"></div>
       <div class="pulse-ring"></div>
-      <!-- Recording wave rings (mint) -->
+      <!-- Anneaux enregistrement (menthe) -->
       <div class="wave-ring"></div>
       <div class="wave-ring"></div>
       <div class="wave-ring"></div>
       <button id="btn-mic" aria-label="Démarrer l'enregistrement">
-        <!-- Mic icon — visible when idle -->
+        <!-- Icône micro — visible à l'arrêt -->
         <svg id="ico-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
           <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
           <line x1="12" y1="19" x2="12" y2="23"/>
           <line x1="8"  y1="23" x2="16" y2="23"/>
         </svg>
-        <!-- Stop icon — visible when recording -->
+        <!-- Icône stop — visible en enregistrement -->
         <svg id="ico-stop" class="hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <rect x="6" y="6" width="12" height="12" rx="2.5"/>
         </svg>
@@ -657,23 +847,23 @@
     <span id="mic-label" class="mic-label">Appuyer pour pitcher</span>
   </div>
 
-  <!-- Live transcript (Web Speech API) -->
+  <!-- Transcription en direct (Web Speech API) -->
   <div id="transcript-card" class="card transcript-card" aria-live="polite" aria-label="Transcription en temps réel">
     <p class="ph" id="transcript-ph">Votre transcription apparaîtra ici en temps réel…</p>
     <p id="transcript-txt" class="hidden"></p>
   </div>
 
-  <!-- Manual input fallback (shown when Web Speech API is unavailable) -->
+  <!-- Saisie manuelle (fallback si Web Speech API indisponible) -->
   <div id="manual-wrap" class="hidden">
     <p class="note">La reconnaissance vocale n'est pas disponible sur cet appareil.<br>Saisissez votre pitch ci-dessous :</p>
     <textarea id="manual-text" placeholder="Décrivez votre solution, le problème qu'elle résout, votre cible, votre technologie clé…" aria-label="Texte du pitch"></textarea>
   </div>
 
-  <!-- 8 essential checklist items — auto-checked by AI -->
+  <!-- Checklist 8 points — cochée automatiquement par l'IA -->
   <p class="checklist-hd">Points essentiels</p>
   <div id="cl1" class="checklist" role="list" aria-label="Points essentiels du pitch"></div>
 
-  <!-- Finish early button (shown only during recording) -->
+  <!-- Bouton de fin anticipée (visible uniquement pendant l'enregistrement) -->
   <button id="btn-finish" aria-label="Terminer l'enregistrement maintenant">J'ai terminé →</button>
 </main>
 
@@ -692,7 +882,7 @@
     <span id="score-txt">0/8 points couverts</span>
   </div>
 
-  <!-- AI-extracted & editable fields -->
+  <!-- Champs pré-remplis par l'IA -->
   <p class="section-label">Votre solution</p>
 
   <div class="field-group">
@@ -749,11 +939,11 @@
     <textarea id="f-resume" placeholder="Généré par l'IA — éditez si besoin…"></textarea>
   </div>
 
-  <!-- Mini checklist recap -->
+  <!-- Récapitulatif de la checklist -->
   <p class="section-label">Points couverts</p>
   <div id="cl2" class="checklist" style="margin-bottom:1rem" role="list" aria-label="Points essentiels couverts"></div>
 
-  <!-- Contact form -->
+  <!-- Coordonnées -->
   <p class="section-label">Vos coordonnées</p>
 
   <div class="field-group">
@@ -784,7 +974,7 @@
     <input id="f-url" type="url" placeholder="https://…" autocomplete="url">
   </div>
 
-  <button id="btn-submit" aria-label="Envoyer mon pitch">Envoyer mon pitch 🚀</button>
+  <button id="btn-submit" aria-label="Envoyer mon pitch">Envoyer mon pitch →</button>
 </main>
 
 
@@ -809,11 +999,18 @@
   </div>
 
   <button id="btn-restart">Nouveau pitch</button>
+
+  <!-- Signature FAN -->
+  <div class="fan-footer">
+    <div class="fan-footer-filet"></div>
+    <div class="fan-footer-titre">Fabrique de l'Adoption Numérique</div>
+    <div class="fan-footer-sous">NOVA — Pitch Intelligence · SNCF × VivaTech 2026</div>
+  </div>
 </main>
 
 
 <!-- ================================================================
-     ANALYZING OVERLAY
+     OVERLAY — analyse IA en cours
      ================================================================ -->
 <div id="overlay" role="status" aria-live="polite">
   <div class="spinner"></div>
@@ -822,7 +1019,7 @@
 
 
 <!-- ================================================================
-     API KEY MODAL (bottom sheet)
+     MODAL — clé API Anthropic (bottom sheet)
      Affiché au premier lancement si pas de ?key= dans l'URL
      ================================================================ -->
 <div id="modal-key" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modal-key-title">
@@ -838,14 +1035,15 @@
 </div>
 
 
-<!-- TOAST notification -->
+<!-- Toast de notification -->
 <div id="toast" role="status" aria-live="polite"></div>
 
 
 <script>
 /* ================================================================
-   PitchExpress — SNCF × VivaTech 2026
-   Vanilla JS, zero dependencies, single-file HTML
+   NOVA — Pitch Intelligence
+   Fabrique de l'Adoption Numérique (FAN) × SNCF × VivaTech 2026
+   Vanilla JS, zéro dépendance, fichier HTML unique
    ================================================================ */
 
 /* ----------------------------------------------------------------
@@ -887,7 +1085,7 @@ const ITEMS = [
 
 
 /* ----------------------------------------------------------------
-   APPLICATION STATE
+   ÉTAT DE L'APPLICATION
    ---------------------------------------------------------------- */
 const S = {
   apiKey:          '',
@@ -907,7 +1105,7 @@ ITEMS.forEach(i => { S.checks[i.id] = false; });
 
 
 /* ----------------------------------------------------------------
-   DOM HELPERS
+   UTILITAIRES DOM
    ---------------------------------------------------------------- */
 const $  = id => document.getElementById(id);
 const qa = s  => document.querySelectorAll(s);
@@ -935,7 +1133,7 @@ function hideOverlay() { $('overlay').classList.remove('on'); }
 
 
 /* ----------------------------------------------------------------
-   API KEY — BYOK PATTERN
+   CLÉ API — BYOK PATTERN
    Priorité : ?key= param URL → sessionStorage → modal de saisie
    ---------------------------------------------------------------- */
 function loadKey() {
@@ -971,7 +1169,7 @@ function requireKey() {
 
 
 /* ----------------------------------------------------------------
-   CHECKLIST — construction & mise à jour
+   CHECKLIST — construction & synchronisation
    ---------------------------------------------------------------- */
 function buildCL(containerId) {
   const c = $(containerId);
@@ -987,7 +1185,7 @@ function buildCL(containerId) {
 }
 
 function syncCL() {
-  // Synchronise les deux checklists (screen 1 + screen 2) avec l'état S.checks
+  // Synchronise les deux checklists (écran 1 + écran 2) avec l'état S.checks
   ['cl1', 'cl2'].forEach(cid => {
     ITEMS.forEach(item => {
       const el = $(`${cid}__${item.id}`);
@@ -1006,7 +1204,7 @@ function checkedCount() {
 
 
 /* ----------------------------------------------------------------
-   TIMER
+   MINUTEUR
    ---------------------------------------------------------------- */
 function startTimer() {
   S.timeLeft = PITCH_DURATION;
@@ -1075,7 +1273,7 @@ function initSpeech() {
   };
 
   // Les navigateurs coupent automatiquement la reconnaissance après un silence.
-  // On redémarre si on est toujours en cours d'enregistrement.
+  // On redémarre si l'enregistrement est toujours en cours.
   r.onend = () => { if (S.recording) { try { r.start(); } catch(_) {} } };
 
   S.rec = r;
@@ -1085,7 +1283,7 @@ function renderTranscript() {
   const ph = $('transcript-ph');
   const tx = $('transcript-txt');
   const full = S.transcript
-    + (S.interim ? `<em style="color:rgba(255,255,255,0.38)">${S.interim}</em>` : '');
+    + (S.interim ? `<em style="color:rgba(255,255,255,0.32)">${S.interim}</em>` : '');
   if (full) {
     ph.classList.add('hidden');
     tx.classList.remove('hidden');
@@ -1101,10 +1299,10 @@ function renderTranscript() {
 
 
 /* ----------------------------------------------------------------
-   RECORDING — start / stop
+   ENREGISTREMENT — démarrage / arrêt
    ---------------------------------------------------------------- */
 async function startRecording() {
-  // Demande explicite de permission micro (meilleure UX que le prompt natif)
+  // Demande explicite de permission micro
   try {
     await navigator.mediaDevices.getUserMedia({ audio: true });
   } catch(_) {
@@ -1165,7 +1363,7 @@ function stopRecording() {
   $('btn-finish').style.display = 'none';
 }
 
-// Retourne le texte courant (speech ou manuel)
+// Retourne le texte courant (speech ou saisie manuelle)
 function liveText() {
   return S.speechOK ? S.transcript.trim() : $('manual-text').value.trim();
 }
@@ -1192,7 +1390,7 @@ async function finishPitch() {
 
 
 /* ----------------------------------------------------------------
-   CLAUDE API — appels Anthropic
+   API CLAUDE — appels Anthropic
    ---------------------------------------------------------------- */
 
 // Analyse partielle : retourne uniquement les checks (prompt léger)
@@ -1205,7 +1403,7 @@ async function analyzePartial(txt) {
   }
 }
 
-// Analyse complète : checks + extraction des données de pré-remplissage
+// Analyse complète : checks + extraction des données pour pré-remplissage
 async function analyzeFullPitch(txt) {
   if (!S.apiKey) return;
   const r = await callClaude(promptFull(txt));
@@ -1347,10 +1545,10 @@ function goReview() {
   buildCL('cl2');
   show('screen-review');
 
-  // Message bienveillant si incomplet (JAMAIS culpabilisant)
+  // Message bienveillant si incomplet (jamais culpabilisant)
   if (n < 8) {
     toast(
-      `Pas d'inquiétude — ${n}/8 points couverts. Vous pouvez compléter ci-dessous !`,
+      `Pas d'inquiétude — ${n}/8 points couverts. Vous pouvez compléter ci-dessous.`,
       '', 5000
     );
   }
@@ -1370,7 +1568,7 @@ function pickOpt(id, val) {
 
 
 /* ----------------------------------------------------------------
-   FORM VALIDATION & SUBMISSION
+   VALIDATION & SOUMISSION DU FORMULAIRE
    ---------------------------------------------------------------- */
 function validate() {
   const nom    = $('f-nom').value.trim();
@@ -1419,7 +1617,7 @@ async function submitPitch() {
       toast('Envoi échoué. Contactez l\'animateur du stand.', 'bad', 6000);
     }
     btn.disabled    = false;
-    btn.textContent = 'Envoyer mon pitch 🚀';
+    btn.textContent = 'Envoyer mon pitch →';
     return;
   }
 
@@ -1429,13 +1627,13 @@ async function submitPitch() {
 function buildPayload() {
   return {
     timestamp: new Date().toISOString(),
-    source:    'PitchExpress_VivaTech2026',
+    source:    'NOVA_VivaTech2026',
     contact: {
-      nom:         $('f-nom').value.trim(),
-      entreprise:  $('f-entreprise').value.trim(),
-      email:       $('f-email').value.trim(),
-      telephone:   $('f-tel').value.trim(),
-      url:         $('f-url').value.trim(),
+      nom:        $('f-nom').value.trim(),
+      entreprise: $('f-entreprise').value.trim(),
+      email:      $('f-email').value.trim(),
+      telephone:  $('f-tel').value.trim(),
+      url:        $('f-url').value.trim(),
     },
     solution: {
       nom:         $('f-solution').value.trim(),
@@ -1472,9 +1670,9 @@ function goThanks(payload) {
     'Bon début — l\'équipe a hâte d\'en savoir plus sur votre projet.',
     'Pitch solide — encore quelques points à préciser.',
     'Bon pitch, avec quelques axes à approfondir.',
-    'Très bon pitch, bien structuré !',
-    'Excellent pitch, quasi parfait !',
-    'Pitch parfait — tous les points couverts ! 🎯',
+    'Très bon pitch, bien structuré.',
+    'Excellent pitch, quasi parfait.',
+    'Pitch parfait — tous les points couverts.',
   ];
   $('t-encourage').textContent = msgs[Math.min(n, 8)];
 
@@ -1486,7 +1684,7 @@ function goThanks(payload) {
    RESET — pour le visiteur suivant
    ---------------------------------------------------------------- */
 function reset() {
-  // State
+  // État
   S.transcript      = '';
   S.interim         = '';
   S.recording       = false;
@@ -1495,10 +1693,10 @@ function reset() {
   S.lastAnalyzedLen = 0;
   ITEMS.forEach(i => { S.checks[i.id] = false; });
 
-  // Screen 1
+  // Écran 1
   $('timer-wrap').classList.add('hidden');
-  $('timer-bar').style.width  = '100%';
-  $('timer-bar').className    = 'timer-bar';
+  $('timer-bar').style.width   = '100%';
+  $('timer-bar').className     = 'timer-bar';
   $('timer-count').textContent = '1:30';
   $('btn-finish').style.display = 'none';
   $('ico-mic').classList.remove('hidden');
@@ -1513,7 +1711,7 @@ function reset() {
   $('transcript-txt').innerHTML = '';
   $('manual-text').value = '';
 
-  // Screen 2
+  // Écran 2
   ['f-solution','f-domaine','f-techno','f-maturite','f-resume',
    'f-nom','f-entreprise','f-email','f-tel','f-url'].forEach(id => {
     const el = $(id);
@@ -1523,7 +1721,7 @@ function reset() {
   setErr('err-entreprise', false);
   setErr('err-email',      false);
   $('btn-submit').disabled    = false;
-  $('btn-submit').textContent = 'Envoyer mon pitch 🚀';
+  $('btn-submit').textContent = 'Envoyer mon pitch →';
 
   buildCL('cl1');
   show('screen-pitch');
@@ -1531,7 +1729,7 @@ function reset() {
 
 
 /* ----------------------------------------------------------------
-   EVENTS
+   ÉVÉNEMENTS
    ---------------------------------------------------------------- */
 $('btn-mic').addEventListener('click', async () => {
   if (S.recording) {
@@ -1547,7 +1745,7 @@ $('btn-finish').addEventListener('click', finishPitch);
 $('btn-submit').addEventListener('click', submitPitch);
 $('btn-restart').addEventListener('click', reset);
 
-// Validation inline (feedback immédiat)
+// Validation inline (retour immédiat)
 $('f-nom').addEventListener('input',        () => setErr('err-nom',        !$('f-nom').value.trim()));
 $('f-entreprise').addEventListener('input', () => setErr('err-entreprise', !$('f-entreprise').value.trim()));
 $('f-email').addEventListener('input', () => {
@@ -1557,7 +1755,7 @@ $('f-email').addEventListener('input', () => {
 
 
 /* ----------------------------------------------------------------
-   INIT
+   INITIALISATION
    ---------------------------------------------------------------- */
 initSpeech();
 buildCL('cl1');
