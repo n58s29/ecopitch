@@ -51,17 +51,18 @@
     /* ── TOPBAR ─────────────────────────────────────────────────── */
     .topbar {
       position:fixed; top:0; left:0; right:0; z-index:100;
-      height:44px;
-      background:rgba(0,32,91,0.97);
-      backdrop-filter:blur(8px);
+      height:48px;
+      background:rgba(0,20,64,0.97);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(255,255,255,0.06);
       display:flex; align-items:center;
       padding:0 1.25rem;
       justify-content:space-between;
     }
     .topbar-logo {
       font-family:var(--police-display);
-      font-size:15px; font-weight:500;
-      color:var(--sur-primaire); letter-spacing:0.06em;
+      font-size:15px; font-weight:600;
+      color:var(--sur-primaire); letter-spacing:0.12em;
     }
     .eyebrow {
       display:flex; align-items:center; gap:0.45rem;
@@ -79,7 +80,7 @@
     /* ── SCREENS ────────────────────────────────────────────────── */
     .screen {
       display:none; min-height:100dvh;
-      padding:3.75rem 1.25rem 2.5rem;
+      padding:4rem 1.25rem 2.5rem;
       flex-direction:column;
       animation:fadeIn 0.28s ease;
     }
@@ -108,9 +109,9 @@
     /* ── TYPO ───────────────────────────────────────────────────── */
     h1 {
       font-family:var(--police-display);
-      font-size:clamp(1.45rem,5vw,1.9rem);
-      font-weight:500; line-height:1.22;
-      letter-spacing:-0.02em; color:var(--sur-primaire);
+      font-size:clamp(1.6rem,5.5vw,2.1rem);
+      font-weight:600; line-height:1.18;
+      letter-spacing:-0.025em; color:var(--sur-primaire);
       margin-bottom:0.45rem;
     }
     h2 {
@@ -129,17 +130,106 @@
     }
 
     /* ── SCREEN 1 ── PITCH ──────────────────────────────────────── */
-    #screen-pitch .hd { margin-bottom:1.1rem; }
+    #screen-pitch .hd { margin-bottom:1.25rem; }
+
+    /* ── WAVEFORM VISUALIZER ─────────────────────────────────────── */
+    .viz-wrap {
+      display:none;
+      background:linear-gradient(160deg,rgba(0,136,204,0.07) 0%,rgba(131,116,209,0.06) 100%);
+      border:1px solid rgba(0,136,204,0.20);
+      border-radius:20px;
+      padding:1.75rem 1rem 1.5rem;
+      flex-direction:column;
+      align-items:center;
+      gap:1rem;
+      margin-bottom:1rem;
+      position:relative;
+      overflow:hidden;
+    }
+    .viz-wrap::after {
+      content:'';
+      position:absolute; bottom:0; left:0; right:0; height:40px;
+      background:linear-gradient(to top,rgba(0,136,204,0.06),transparent);
+      pointer-events:none;
+    }
+    .viz-wrap.visible { display:flex; }
+
+    .viz-bars {
+      display:flex;
+      align-items:center;
+      gap:3px;
+      height:80px;
+      width:100%;
+      justify-content:center;
+    }
+    .viz-bar {
+      width:4px;
+      border-radius:3px;
+      background:linear-gradient(to top,var(--cerulean) 0%,rgba(131,116,209,0.85) 100%);
+      height:6px;
+      flex-shrink:0;
+      transition:height 0.06s ease;
+    }
+
+    .timer-big {
+      font-family:var(--police-display);
+      font-size:clamp(3rem,12vw,4rem);
+      font-weight:600;
+      letter-spacing:-0.04em;
+      color:var(--sur-primaire);
+      font-variant-numeric:tabular-nums;
+      line-height:1;
+      text-align:center;
+    }
+    .timer-big.warning { color:var(--ambre); }
+    .timer-big.danger  { color:var(--ocre); }
+
+    .rec-badge {
+      display:inline-flex; align-items:center; gap:0.45rem;
+      padding:0.3rem 0.9rem;
+      background:rgba(220,88,42,0.09);
+      border:1px solid rgba(220,88,42,0.26);
+      border-radius:2rem;
+      font-size:0.68rem; font-weight:500;
+      letter-spacing:0.09em; text-transform:uppercase;
+      color:var(--ocre);
+    }
+    .rec-dot-badge {
+      width:6px; height:6px; border-radius:50%;
+      background:var(--ocre);
+      animation:blink 1s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+    /* Bouton STOP AND ANALYZE (visible uniquement pendant l'enregistrement) */
+    .btn-stop-analyze {
+      display:none;
+      width:100%; align-items:center; justify-content:center; gap:0.75rem;
+      padding:1.1rem 1.5rem; border-radius:16px; border:none;
+      background:var(--primaire-conteneur);
+      color:var(--sur-primaire);
+      font-family:var(--police-corps); font-size:0.9rem; font-weight:600;
+      cursor:pointer; transition:all var(--transition); margin-bottom:1rem;
+      box-shadow:0 4px 28px rgba(0,0,0,0.35);
+      letter-spacing:0.06em; text-transform:uppercase;
+    }
+    .btn-stop-analyze.visible { display:flex; }
+    .btn-stop-analyze:hover   { background:#1d4880; transform:translateY(-1px); }
+    .btn-stop-analyze:active  { transform:scale(0.98) translateY(0); }
+    .stop-sq {
+      width:18px; height:18px; border-radius:4px;
+      background:var(--ocre); flex-shrink:0;
+    }
 
     /* Zone de texte principale */
     #pitch-text {
-      width:100%; min-height:165px;
+      width:100%; min-height:155px;
       background:rgba(255,255,255,0.04);
       border:1.5px solid rgba(255,255,255,0.10);
-      border-radius:14px;
+      border-radius:16px;
       color:var(--texte-primaire);
       font-family:var(--police-corps);
-      font-size:0.875rem; font-weight:300; line-height:1.65;
+      font-size:0.9rem; font-weight:300; line-height:1.65;
       padding:1rem 1.1rem; resize:none; outline:none;
       transition:border-color var(--transition), box-shadow var(--transition);
     }
@@ -148,7 +238,7 @@
       box-shadow:0 0 0 4px rgba(0,136,204,0.07);
     }
     #pitch-text.recording {
-      border-color:rgba(0,179,136,0.50);
+      border-color:rgba(0,179,136,0.45);
       box-shadow:0 0 0 4px rgba(0,179,136,0.07);
     }
     #pitch-text::placeholder { color:var(--texte-muet); font-style:italic; }
@@ -156,7 +246,7 @@
     /* Méta sous textarea */
     .pitch-meta {
       display:flex; justify-content:flex-end;
-      margin-top:0.35rem; margin-bottom:0.75rem;
+      margin-top:0.3rem; margin-bottom:0.75rem;
     }
     .word-count { font-size:0.72rem; color:var(--texte-muet); }
 
@@ -174,7 +264,6 @@
       background:var(--menthe); flex-shrink:0;
       animation:blink 1s ease-in-out infinite;
     }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
     .timer-bar-bg {
       flex:1; height:3px;
       background:rgba(255,255,255,0.08);
@@ -192,15 +281,15 @@
       font-variant-numeric:tabular-nums; min-width:2.2rem; text-align:right;
     }
 
-    /* Boutons d'action */
+    /* Boutons d'action (visibles quand pas en enregistrement) */
     .action-row {
       display:grid; grid-template-columns:auto 1fr;
-      gap:0.65rem; margin-bottom:1.25rem;
+      gap:0.65rem; margin-bottom:0.65rem;
     }
 
     .btn-dictee {
       display:flex; align-items:center; justify-content:center; gap:0.5rem;
-      padding:0.82rem 1.1rem; border-radius:12px;
+      padding:0.88rem 1.15rem; border-radius:14px;
       border:1.5px solid rgba(255,255,255,0.12);
       background:rgba(255,255,255,0.04);
       color:var(--texte-secondaire);
@@ -209,7 +298,7 @@
     }
     .btn-dictee:hover {
       border-color:rgba(255,255,255,0.22);
-      background:rgba(255,255,255,0.07);
+      background:rgba(255,255,255,0.08);
       color:var(--texte-primaire);
     }
     .btn-dictee:active { transform:scale(0.97); }
@@ -222,15 +311,15 @@
 
     .btn-analyser {
       display:flex; align-items:center; justify-content:center; gap:0.5rem;
-      padding:0.82rem 1.25rem; border-radius:12px; border:none;
+      padding:0.88rem 1.25rem; border-radius:14px; border:none;
       background:var(--cerulean); color:#fff;
-      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:600;
       cursor:pointer; transition:all var(--transition);
-      box-shadow:0 4px 16px rgba(0,136,204,0.28);
+      box-shadow:0 4px 20px rgba(0,136,204,0.32);
     }
     .btn-analyser:hover {
       background:#009adb;
-      box-shadow:0 6px 20px rgba(0,136,204,0.38);
+      box-shadow:0 6px 24px rgba(0,136,204,0.42);
       transform:translateY(-1px);
     }
     .btn-analyser:active { transform:scale(0.98) translateY(0); }
@@ -240,15 +329,27 @@
     }
     .btn-analyser svg { width:17px; height:17px; flex-shrink:0; }
 
+    /* Bouton complétion manuelle */
+    .btn-manual {
+      display:block; width:100%; text-align:center;
+      padding:0.5rem; background:none; border:none;
+      color:var(--texte-muet); font-family:var(--police-corps);
+      font-size:0.78rem; font-weight:300; cursor:pointer;
+      transition:color var(--transition); margin-bottom:1rem;
+      text-decoration:underline; text-underline-offset:3px;
+      text-decoration-color:rgba(255,255,255,0.15);
+    }
+    .btn-manual:hover { color:var(--texte-secondaire); }
+
     /* Checklist */
     .checklist-hd {
       font-size:11px; font-weight:500; color:var(--texte-muet);
       text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.45rem;
     }
-    .checklist { display:flex; flex-direction:column; gap:0.28rem; margin-bottom:0.8rem; }
+    .checklist { display:flex; flex-direction:column; gap:0.3rem; margin-bottom:0.8rem; }
     .check-item {
       display:flex; align-items:center; gap:0.6rem;
-      padding:0.48rem 0.75rem; border-radius:8px;
+      padding:0.5rem 0.75rem; border-radius:10px;
       background:var(--carte-fond); border:1px solid var(--carte-bord);
       font-size:0.8rem; font-weight:300; color:var(--texte-secondaire);
       transition:background var(--transition), border-color var(--transition), color var(--transition);
@@ -283,8 +384,17 @@
       border-color:rgba(0,179,136,0.20);
     }
     .cl-hint {
-      font-size:10px; color:var(--texte-muet);
-      text-transform:none; letter-spacing:0; font-weight:300;
+      font-size:10px; color:var(--cerulean);
+      text-transform:none; letter-spacing:0; font-weight:400;
+    }
+    /* Aide visuelle "tap to toggle" sur les items cliquables screen 2 */
+    .check-item.clickable::after {
+      content:'';
+      flex:1;
+    }
+    .check-item.clickable .chk-tap {
+      font-size:9px; color:var(--texte-muet); font-weight:300;
+      letter-spacing:0; white-space:nowrap; margin-left:auto;
     }
 
     .score-pill {
@@ -328,15 +438,15 @@
     .err-msg.on { display:block; }
 
     #btn-submit {
-      width:100%; padding:0.92rem 1.5rem; border-radius:12px; border:none;
+      width:100%; padding:0.96rem 1.5rem; border-radius:14px; border:none;
       background:var(--cerulean); color:var(--sur-primaire);
-      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      font-family:var(--police-corps); font-size:0.9rem; font-weight:600;
       cursor:pointer; transition:all var(--transition); margin-top:0.5rem;
-      box-shadow:0 4px 16px rgba(0,136,204,0.28);
+      box-shadow:0 4px 20px rgba(0,136,204,0.30);
     }
-    #btn-submit:hover { background:#009adb; box-shadow:0 6px 20px rgba(0,136,204,0.38); }
+    #btn-submit:hover { background:#009adb; box-shadow:0 6px 24px rgba(0,136,204,0.42); transform:translateY(-1px); }
     #btn-submit:active { transform:scale(0.98); }
-    #btn-submit:disabled { opacity:0.45; cursor:not-allowed; }
+    #btn-submit:disabled { opacity:0.45; cursor:not-allowed; transform:none; }
 
     /* ── SCREEN 3 ── MERCI ──────────────────────────────────────── */
     #screen-thanks {
@@ -364,7 +474,7 @@
     .score-lbl { font-size:0.82rem; font-weight:300; color:var(--texte-secondaire); margin-top:0.3rem; }
     #btn-restart {
       width:100%; max-width:260px; padding:0.88rem 1.5rem;
-      border-radius:12px; border:1.5px solid var(--cerulean);
+      border-radius:14px; border:1.5px solid var(--cerulean);
       background:transparent; color:var(--cerulean);
       font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
       cursor:pointer; transition:all var(--transition);
@@ -427,11 +537,12 @@
       box-shadow:0 4px 14px rgba(0,136,204,0.25);
     }
     #btn-merci-restart:hover { background:#009adb; }
+
     .modal-sheet {
       background:var(--sombre-fond-moyen);
       border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px 14px 0 0;
-      padding:1.5rem 1.25rem 2rem; width:100%; max-width:480px;
+      border-radius:20px 20px 0 0;
+      padding:1.75rem 1.25rem 2.25rem; width:100%; max-width:480px;
       animation:slideUp 0.28s ease;
     }
     @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
@@ -451,17 +562,28 @@
     #input-api-key:focus { border-bottom-color:var(--cerulean); }
     #input-api-key::placeholder { color:var(--texte-muet); }
     #btn-save-key {
-      width:100%; padding:0.82rem 1.5rem; border-radius:12px; border:none;
+      width:100%; padding:0.88rem 1.5rem; border-radius:12px; border:none;
       background:var(--cerulean); color:var(--sur-primaire);
       font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
       cursor:pointer; transition:background var(--transition);
+      margin-bottom:0.6rem;
     }
     #btn-save-key:hover { background:#009adb; }
+
+    /* Bouton "Passer sans IA" dans la modale clé */
+    #btn-skip-key {
+      width:100%; padding:0.65rem; border-radius:10px;
+      border:1px solid rgba(255,255,255,0.09);
+      background:transparent; color:var(--texte-muet);
+      font-family:var(--police-corps); font-size:0.8rem; font-weight:300;
+      cursor:pointer; transition:all var(--transition);
+    }
+    #btn-skip-key:hover { color:var(--texte-secondaire); border-color:rgba(255,255,255,0.18); }
 
     /* ── OVERLAY ────────────────────────────────────────────────── */
     #overlay {
       display:none; position:fixed; inset:0;
-      background:rgba(0,32,91,0.88); backdrop-filter:blur(8px);
+      background:rgba(0,20,64,0.88); backdrop-filter:blur(8px);
       z-index:150; align-items:center; justify-content:center;
       flex-direction:column; gap:1rem;
     }
@@ -481,7 +603,7 @@
       transform:translateX(-50%) translateY(130%);
       background:var(--sombre-fond-moyen);
       border:1px solid rgba(255,255,255,0.10);
-      border-radius:0.375rem; padding:0.58rem 1.15rem;
+      border-radius:0.5rem; padding:0.6rem 1.2rem;
       font-size:0.8rem; font-weight:300; color:var(--texte-primaire);
       z-index:300; transition:transform 0.28s ease;
       white-space:nowrap; pointer-events:none;
@@ -517,7 +639,17 @@
   <div class="hd">
     <div class="badge">SNCF × VivaTech 2026</div>
     <h1>Pitchez votre solution</h1>
-    <p class="subtitle">Dictez ou rédigez votre pitch — l'IA vérifie en direct les 8 points essentiels.</p>
+    <p class="subtitle">Dictez ou rédigez — l'IA vérifie les 8 points essentiels en temps réel.</p>
+  </div>
+
+  <!-- Visualisation waveform (visible uniquement pendant l'enregistrement) -->
+  <div id="viz-wrap" class="viz-wrap" aria-hidden="true">
+    <div id="viz-bars" class="viz-bars"></div>
+    <div id="timer-big" class="timer-big">1:30</div>
+    <div class="rec-badge">
+      <div class="rec-dot-badge"></div>
+      Enregistrement en cours
+    </div>
   </div>
 
   <!-- Zone de texte principale — toujours éditable -->
@@ -531,7 +663,7 @@
     <span class="word-count" id="word-count">0 mot</span>
   </div>
 
-  <!-- Timer (visible uniquement pendant la dictée) -->
+  <!-- Timer compact (visible uniquement pendant la dictée, derrière viz-wrap) -->
   <div class="timer-strip" id="timer-strip">
     <div class="rec-dot"></div>
     <div class="timer-bar-bg">
@@ -540,8 +672,14 @@
     <span id="timer-count">1:30</span>
   </div>
 
-  <!-- Boutons d'action -->
-  <div class="action-row">
+  <!-- Bouton STOP AND ANALYZE (visible pendant l'enregistrement) -->
+  <button id="btn-stop-analyze" class="btn-stop-analyze" aria-label="Arrêter et analyser">
+    <div class="stop-sq" aria-hidden="true"></div>
+    Stop &amp; Analyser
+  </button>
+
+  <!-- Boutons d'action (visibles quand pas en enregistrement) -->
+  <div id="action-row" class="action-row">
     <button id="btn-mic" class="btn-dictee" aria-label="Démarrer la dictée">
       <svg id="ico-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -559,9 +697,14 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
       </svg>
-      Analyser
+      Analyser avec l'IA
     </button>
   </div>
+
+  <!-- Complétion manuelle sans IA -->
+  <button id="btn-manual" class="btn-manual" aria-label="Remplir le formulaire manuellement">
+    Remplir le formulaire manuellement sans IA →
+  </button>
 
   <!-- Checklist 8 points — mise à jour par l'IA -->
   <p class="checklist-hd">Points essentiels</p>
@@ -635,7 +778,7 @@
     <textarea id="f-resume" placeholder="Généré par l'IA — éditez si besoin…"></textarea>
   </div>
 
-  <p class="section-label">Points couverts <span class="cl-hint">— cliquez pour cocher / décocher</span></p>
+  <p class="section-label">Points couverts <span class="cl-hint">— appuyez pour cocher / décocher</span></p>
   <div id="cl2" class="checklist" style="margin-bottom:1rem" role="list" aria-label="Points essentiels couverts — cliquables"></div>
 
   <p class="section-label">Vos coordonnées</p>
@@ -710,7 +853,8 @@
     <h2 id="modal-key-title">Clé API Anthropic</h2>
     <p>Pour analyser votre pitch en temps réel, une clé API Anthropic est nécessaire. Elle est conservée uniquement durant cette session.</p>
     <input id="input-api-key" type="password" placeholder="sk-ant-api03-…" aria-label="Clé API Anthropic" autocomplete="off" spellcheck="false">
-    <button id="btn-save-key">Continuer →</button>
+    <button id="btn-save-key">Analyser avec l'IA →</button>
+    <button id="btn-skip-key">Passer sans analyse IA — remplir manuellement</button>
   </div>
 </div>
 
@@ -808,6 +952,7 @@ function requireKey() {
     const k = loadKey();
     if (k) { S.apiKey = k; resolve(k); return; }
     $('modal-key').classList.add('open');
+
     $('btn-save-key').onclick = () => {
       const v = $('input-api-key').value.trim();
       if (!v.startsWith('sk-ant-')) {
@@ -819,7 +964,62 @@ function requireKey() {
       $('modal-key').classList.remove('open');
       resolve(v);
     };
+
+    // Permettre de passer sans clé → complétion manuelle
+    $('btn-skip-key').onclick = () => {
+      $('modal-key').classList.remove('open');
+      resolve('');
+    };
   });
+}
+
+/* ── Waveform visualizer ────────────────────────────────────────── */
+let _waveRaf = null;
+
+function buildWaveform() {
+  const c = $('viz-bars');
+  c.innerHTML = '';
+  for (let i = 0; i < 30; i++) {
+    const b = document.createElement('div');
+    b.className = 'viz-bar';
+    c.appendChild(b);
+  }
+}
+
+function startWave() {
+  const bars = $('viz-bars').children;
+  function frame() {
+    for (let i = 0; i < bars.length; i++) {
+      if (Math.random() < 0.32) {
+        bars[i].style.height = (4 + Math.random() * 68) + 'px';
+      }
+    }
+    _waveRaf = requestAnimationFrame(frame);
+  }
+  _waveRaf = requestAnimationFrame(frame);
+}
+
+function stopWave() {
+  if (_waveRaf) { cancelAnimationFrame(_waveRaf); _waveRaf = null; }
+  const bars = $('viz-bars').children;
+  for (const b of bars) b.style.height = '6px';
+}
+
+function showRecordingUI() {
+  $('viz-wrap').classList.add('visible');
+  $('btn-stop-analyze').classList.add('visible');
+  $('action-row').classList.add('hidden');
+  $('btn-manual').classList.add('hidden');
+  buildWaveform();
+  startWave();
+}
+
+function hideRecordingUI() {
+  $('viz-wrap').classList.remove('visible');
+  $('btn-stop-analyze').classList.remove('visible');
+  $('action-row').classList.remove('hidden');
+  $('btn-manual').classList.remove('hidden');
+  stopWave();
 }
 
 /* ── Checklist ──────────────────────────────────────────────────── */
@@ -832,7 +1032,10 @@ function buildCL(cid, clickable = false) {
     div.id = `${cid}__${item.id}`;
     div.setAttribute('role', clickable ? 'button' : 'listitem');
     if (clickable) div.setAttribute('tabindex', '0');
-    div.innerHTML = `<div class="chk-icon" aria-hidden="true">${S.checks[item.id] ? '✓' : ''}</div><span>${item.q}</span>`;
+    const tapHint = clickable
+      ? `<span class="chk-tap">${S.checks[item.id] ? 'décocher' : 'cocher'}</span>`
+      : '';
+    div.innerHTML = `<div class="chk-icon" aria-hidden="true">${S.checks[item.id] ? '✓' : ''}</div><span>${item.q}</span>${tapHint}`;
     if (clickable) {
       div.addEventListener('click', () => toggleCheck(item.id));
       div.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCheck(item.id); } });
@@ -884,7 +1087,7 @@ function startTimer() {
     if (S.timeLeft <= 0) {
       clearInterval(S.timerInt); S.timerInt = null;
       stopRecording();
-      toast('Temps écoulé — cliquez sur Analyser pour continuer.', '', 4000);
+      toast('Temps écoulé — cliquez sur Stop & Analyser pour continuer.', '', 4000);
     }
   }, 1000);
 }
@@ -896,7 +1099,12 @@ function renderTimer() {
   bar.className = 'timer-bar' + (S.timeLeft <= 10 ? ' danger' : S.timeLeft <= 30 ? ' warning' : '');
   const m = Math.floor(S.timeLeft / 60);
   const s = (S.timeLeft % 60).toString().padStart(2, '0');
-  $('timer-count').textContent = `${m}:${s}`;
+  const timeStr = `${m}:${s}`;
+  $('timer-count').textContent = timeStr;
+  // Mise à jour du grand timer
+  const big = $('timer-big');
+  big.textContent = `0${timeStr}`;
+  big.className = 'timer-big' + (S.timeLeft <= 10 ? ' danger' : S.timeLeft <= 30 ? ' warning' : '');
 }
 
 function stopTimer() {
@@ -951,7 +1159,6 @@ async function startRecording() {
     return;
   }
 
-  // Préserver le texte déjà saisi
   S.transcript     = $('pitch-text').value;
   S.interim        = '';
   S.recording      = true;
@@ -964,6 +1171,7 @@ async function startRecording() {
   $('mic-label').textContent = 'Arrêter';
   $('pitch-text').classList.add('recording');
 
+  showRecordingUI();
   buildCL('cl1');
   startTimer();
   if (S.speechOK) { try { S.rec.start(); } catch(_) {} }
@@ -983,7 +1191,6 @@ function stopRecording() {
   if (!S.recording) return;
   S.recording = false;
   if (S.rec) { try { S.rec.stop(); } catch(_) {} }
-  // Finaliser le texte intermédiaire
   if (S.interim) { S.transcript += S.interim + ' '; S.interim = ''; renderTranscript(); }
   stopTimer();
 
@@ -994,6 +1201,8 @@ function stopRecording() {
   $('mic-label').textContent = 'Dictée';
   $('pitch-text').classList.remove('recording');
   $('timer-strip').classList.remove('on');
+
+  hideRecordingUI();
 }
 
 function liveText() { return $('pitch-text').value.trim(); }
@@ -1008,21 +1217,33 @@ async function finishPitch() {
     return;
   }
 
-  // Reset checks pour une analyse fraîche
   ITEMS.forEach(i => { S.checks[i.id] = false; });
 
   const btn = $('btn-analyze');
   btn.disabled = true;
-  showOverlay('L\'IA analyse votre pitch…');
-  try {
-    await analyzeFullPitch(txt);
-  } catch(e) {
-    console.error('[Claude]', e);
-    toast('Analyse IA indisponible — vous pouvez compléter manuellement.', 'bad', 4500);
+
+  if (S.apiKey) {
+    showOverlay('L\'IA analyse votre pitch…');
+    try {
+      await analyzeFullPitch(txt);
+    } catch(e) {
+      console.error('[Claude]', e);
+      toast('Analyse IA indisponible — complétez les champs manuellement.', 'bad', 4500);
+    }
+    hideOverlay();
   }
-  hideOverlay();
+
   btn.disabled = false;
   goReview();
+}
+
+/* Aller directement au formulaire sans IA */
+function fillManually() {
+  if (S.recording) stopRecording();
+  ITEMS.forEach(i => { S.checks[i.id] = false; });
+  S.ai = {};
+  goReview();
+  toast('Remplissez les champs et cochez les points couverts manuellement.', '', 5000);
 }
 
 /* ── API Claude ─────────────────────────────────────────────────── */
@@ -1148,7 +1369,7 @@ function goReview() {
   show('screen-review');
 
   const n = checkedCount();
-  if (n < 8) toast(`${n}/8 points couverts — cliquez sur les points manquants pour les cocher.`, '', 5500);
+  if (n < 8) toast(`${n}/8 points — appuyez sur les cases non cochées pour les valider.`, '', 5500);
 }
 
 function pickOpt(id, val) {
@@ -1179,7 +1400,6 @@ async function submitPitch() {
 
   const payload = buildPayload();
 
-  // Envoi silencieux en arrière-plan si le webhook est configuré
   if (SUBMIT_URL !== 'https://your-endpoint.example.com/submit') {
     fetch(SUBMIT_URL, {
       method:'POST',
@@ -1252,11 +1472,14 @@ function reset() {
   $('timer-bar').style.width = '100%';
   $('timer-bar').className = 'timer-bar';
   $('timer-count').textContent = '1:30';
+  $('timer-big').textContent = '01:30';
+  $('timer-big').className = 'timer-big';
   $('ico-mic').classList.remove('hidden');
   $('ico-stop').classList.add('hidden');
   $('mic-label').textContent = 'Dictée';
   $('btn-mic').classList.remove('recording');
   $('btn-analyze').disabled = false;
+  hideRecordingUI();
   updateWordCount();
 
   ['f-solution','f-domaine','f-techno','f-maturite','f-resume',
@@ -1275,7 +1498,7 @@ $('btn-mic').addEventListener('click', async () => {
     stopRecording();
   } else {
     await requireKey();
-    if (!S.apiKey) return;
+    if (!S.apiKey) return; // Si pas de clé, on n'active pas la dictée (l'analyse partielle requiert la clé)
     if (!S.speechOK) {
       toast('La dictée vocale n\'est pas disponible sur cet appareil. Saisissez directement votre pitch.', 'bad', 5000);
       return;
@@ -1286,9 +1509,16 @@ $('btn-mic').addEventListener('click', async () => {
 
 $('btn-analyze').addEventListener('click', async () => {
   await requireKey();
-  if (!S.apiKey) return;
+  // On procède même sans clé : l'utilisateur complètera manuellement
   await finishPitch();
 });
+
+$('btn-stop-analyze').addEventListener('click', async () => {
+  await requireKey();
+  await finishPitch();
+});
+
+$('btn-manual').addEventListener('click', fillManually);
 
 $('btn-submit').addEventListener('click', submitPitch);
 $('btn-restart').addEventListener('click', reset);

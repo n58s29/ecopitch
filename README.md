@@ -8,6 +8,15 @@ Outil de capture et d'analyse de pitchs en temps réel, propulsé par Claude (An
 
 ## Changelog
 
+### v5 — Waveform visualizer + complétion manuelle débloquée (2026-04-16)
+
+- **Visualisation waveform** : pendant l'enregistrement, 30 barres animées (dégradé cerulean → lavande) remplacent l'interface de saisie ; grand timer "01:42" bien visible ; badge "ENREGISTREMENT EN COURS"
+- **Bouton Stop & Analyser** : bouton prominent affiché uniquement pendant l'enregistrement, remplace les boutons Dictée / Analyser
+- **Complétion manuelle débloquée** : un bouton "Remplir le formulaire manuellement sans IA" sur l'écran 1 permet d'accéder directement au formulaire sans clé API ni analyse
+- **Option "Passer sans IA"** dans la modale clé API : l'utilisateur peut désormais bypasser l'analyse IA et compléter toute la fiche manuellement
+- Le bouton "Analyser" ne bloque plus si la clé est absente : redirige vers le formulaire où l'utilisateur coche les points à la main
+- Indications "cocher / décocher" visibles sur chaque item de la checklist cliquable (écran 2)
+
 ### v4 — Checklist manuelle cliquable + popup merci (2026-04-16)
 
 - Les points de la checklist (screen 2) sont cliquables pour cocher/décocher manuellement les points non couverts par l'IA
