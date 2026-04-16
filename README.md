@@ -6,6 +6,28 @@ Outil de capture et d'analyse de pitchs en temps réel, propulsé par Claude (An
 
 ---
 
+## Changelog
+
+### v3 — Refonte UX : saisie libre + deux boutons d'action (2026-04-16)
+
+- **Zone de texte centrale** toujours visible et éditable — le pitch peut être tapé ou dicté
+- **Bouton "Dictée"** : démarre/arrête la transcription vocale (Web Speech API) ; le texte transcrit alimente directement la zone de saisie
+- **Bouton "Analyser"** : déclenche l'analyse Claude sur le contenu de la zone de texte (texte tapé et/ou transcrit), remplace le déclenchement automatique en fin de timer
+- Le timer s'affiche de manière compacte pendant la dictée et arrête l'enregistrement à 0, sans analyser automatiquement
+- Compteur de mots en temps réel sous le textarea
+- Le texte déjà saisi est préservé quand on démarre la dictée
+- Suppression de la zone de transcription séparée et du bouton micro circulaire
+- Design allégé : boutons arrondis, état "recording" sur le textarea (bordure verte), timer en bandeau compact
+
+### v2 — Design system FAN + renommage NOVA (2026-04-16)
+
+- Adoption complète du design system Fabrique de l'Adoption Numérique
+- Renommage de l'outil en NOVA
+- Mode sombre, palette cerulean / ambre / menthe / lavande
+- Topbar fixe, checklist animée, overlay d'analyse
+
+---
+
 ## Fonctionnement
 
 NOVA est un **fichier HTML unique, zéro dépendance**, déployable sur n'importe quel hébergeur statique.

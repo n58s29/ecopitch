@@ -10,785 +10,449 @@
   <style>
     /* ================================================================
        DESIGN SYSTEM — Fabrique de l'Adoption Numérique (FAN)
-       Mode sombre — outil de pitch / présentation événementielle
-       Typographie : Avenir / Avenir Next / Arial, poids max 500
        ================================================================ */
     :root {
-      /* === Couleurs structurelles === */
       --primaire:            #001b44;
       --primaire-conteneur:  #123062;
       --sur-primaire:        #ffffff;
       --sur-primaire-conteneur: #d1e0f0;
-
-      /* === Surfaces mode sombre === */
       --sombre-fond:         #00205b;
       --sombre-fond-moyen:   #001440;
       --sombre-fond-profond: #000d2e;
-
-      /* === Accents fonctionnels === */
       --cerulean:    #0088cc;
       --ambre:       #eed484;
       --menthe:      #00b388;
       --lavande:     #8374d1;
       --ocre:        #dc582a;
       --bleu-horizon: #a4c8e1;
-
-      /* === Texte (dark mode) === */
-      --texte-primaire:   rgba(255, 255, 255, 1);
-      --texte-secondaire: rgba(255, 255, 255, 0.68);
-      --texte-muet:       rgba(255, 255, 255, 0.40);
-
-      /* === Cartes mode sombre === */
-      --carte-fond:       rgba(255, 255, 255, 0.04);
-      --carte-bord:       rgba(255, 255, 255, 0.08);
-      --carte-fond-hover: rgba(255, 255, 255, 0.07);
-      --carte-bord-hover: rgba(255, 255, 255, 0.15);
-
-      /* === Typographie === */
-      --police-display: 'Avenir', 'Avenir Next', sans-serif;
-      --police-corps:   'Avenir', 'Avenir Next', Arial, sans-serif;
-
-      /* === Tokens utilitaires === */
+      --texte-primaire:   rgba(255,255,255,1);
+      --texte-secondaire: rgba(255,255,255,0.68);
+      --texte-muet:       rgba(255,255,255,0.40);
+      --carte-fond:       rgba(255,255,255,0.04);
+      --carte-bord:       rgba(255,255,255,0.08);
+      --police-display: 'Avenir','Avenir Next',sans-serif;
+      --police-corps:   'Avenir','Avenir Next',Arial,sans-serif;
       --transition: 0.2s ease;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
 
     body {
-      min-height: 100dvh;
-      background: var(--sombre-fond);
-      color: var(--texte-primaire);
-      font-family: var(--police-corps);
-      font-weight: 300;
-      line-height: 1.65;
-      overflow-x: hidden;
+      min-height:100dvh;
+      background:var(--sombre-fond);
+      color:var(--texte-primaire);
+      font-family:var(--police-corps);
+      font-weight:300;
+      line-height:1.65;
+      overflow-x:hidden;
     }
 
-    /* ================================================================
-       TOPBAR — identité NOVA
-       ================================================================ */
+    /* ── TOPBAR ─────────────────────────────────────────────────── */
     .topbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      height: 44px;
-      background: rgba(0, 32, 91, 0.97);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      padding: 0 1.25rem;
-      justify-content: space-between;
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      height:44px;
+      background:rgba(0,32,91,0.97);
+      backdrop-filter:blur(8px);
+      display:flex; align-items:center;
+      padding:0 1.25rem;
+      justify-content:space-between;
     }
-
     .topbar-logo {
-      font-family: var(--police-display);
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--sur-primaire);
-      letter-spacing: 0.06em;
+      font-family:var(--police-display);
+      font-size:15px; font-weight:500;
+      color:var(--sur-primaire); letter-spacing:0.06em;
     }
-
     .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      font-family: var(--police-corps);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      color: var(--bleu-horizon);
+      display:flex; align-items:center; gap:0.45rem;
+      font-size:10px; font-weight:500;
+      letter-spacing:0.10em; text-transform:uppercase;
+      color:var(--bleu-horizon);
     }
-
     .point-vivant {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cerulean);
-      animation: pulseDot 2s ease-in-out infinite;
-      flex-shrink: 0;
+      width:6px; height:6px; border-radius:50%;
+      background:var(--cerulean);
+      animation:pulseDot 2s ease-in-out infinite;
     }
+    @keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.35; }
-    }
-
-    /* ================================================================
-       SCREENS
-       ================================================================ */
+    /* ── SCREENS ────────────────────────────────────────────────── */
     .screen {
-      display: none;
-      min-height: 100dvh;
-      padding: 3.75rem 1.25rem 2.5rem; /* compte la topbar 44px */
-      flex-direction: column;
-      animation: fadeIn 0.28s ease;
+      display:none; min-height:100dvh;
+      padding:3.75rem 1.25rem 2.5rem;
+      flex-direction:column;
+      animation:fadeIn 0.28s ease;
     }
-    .screen.active { display: flex; }
-
+    .screen.active { display:flex; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from{opacity:0;transform:translateY(6px)}
+      to{opacity:1;transform:translateY(0)}
     }
 
-    /* ================================================================
-       BADGE — étiquette de section (pill)
-       ================================================================ */
+    /* ── BADGE ──────────────────────────────────────────────────── */
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(0, 136, 204, 0.12);
-      border: 1px solid rgba(0, 136, 204, 0.28);
-      border-radius: 2rem;
-      padding: 0.28rem 0.75rem;
-      font-size: 0.68rem;
-      font-weight: 500;
-      color: var(--cerulean);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 0.9rem;
-      width: fit-content;
+      display:inline-flex; align-items:center; gap:0.4rem;
+      background:rgba(0,136,204,0.12);
+      border:1px solid rgba(0,136,204,0.28);
+      border-radius:2rem; padding:0.28rem 0.75rem;
+      font-size:0.68rem; font-weight:500;
+      color:var(--cerulean); letter-spacing:0.05em;
+      text-transform:uppercase; margin-bottom:0.9rem;
+      width:fit-content;
     }
     .badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: var(--cerulean);
-      border-radius: 50%;
-      flex-shrink: 0;
+      content:''; width:6px; height:6px;
+      background:var(--cerulean); border-radius:50%;
     }
 
-    /* ================================================================
-       TYPOGRAPHIE
-       ================================================================ */
+    /* ── TYPO ───────────────────────────────────────────────────── */
     h1 {
-      font-family: var(--police-display);
-      font-size: clamp(1.45rem, 5vw, 1.9rem);
-      font-weight: 500;
-      line-height: 1.22;
-      letter-spacing: -0.02em;
-      color: var(--sur-primaire);
-      margin-bottom: 0.45rem;
+      font-family:var(--police-display);
+      font-size:clamp(1.45rem,5vw,1.9rem);
+      font-weight:500; line-height:1.22;
+      letter-spacing:-0.02em; color:var(--sur-primaire);
+      margin-bottom:0.45rem;
     }
-
     h2 {
-      font-family: var(--police-display);
-      font-size: 1.1rem;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.65rem;
+      font-family:var(--police-display);
+      font-size:1.1rem; font-weight:500;
+      letter-spacing:-0.01em; margin-bottom:0.65rem;
     }
-
     .subtitle {
-      font-size: 0.875rem;
-      color: var(--texte-secondaire);
-      font-weight: 300;
-      line-height: 1.55;
+      font-size:0.875rem; color:var(--texte-secondaire);
+      font-weight:300; line-height:1.55;
     }
-
     .section-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--texte-muet);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.5rem;
-      margin-top: 0.25rem;
+      font-size:11px; font-weight:500; color:var(--texte-muet);
+      text-transform:uppercase; letter-spacing:0.08em;
+      margin-bottom:0.5rem; margin-top:0.25rem;
     }
 
-    /* ================================================================
-       CARTE SOMBRE (mode vitrine/pitch)
-       ================================================================ */
-    .card {
-      background: var(--carte-fond);
-      border: 1px solid var(--carte-bord);
-      border-radius: 14px;
-      padding: 0.9rem 1rem;
-      transition: background var(--transition), border-color var(--transition);
+    /* ── SCREEN 1 ── PITCH ──────────────────────────────────────── */
+    #screen-pitch .hd { margin-bottom:1.1rem; }
+
+    /* Zone de texte principale */
+    #pitch-text {
+      width:100%; min-height:165px;
+      background:rgba(255,255,255,0.04);
+      border:1.5px solid rgba(255,255,255,0.10);
+      border-radius:14px;
+      color:var(--texte-primaire);
+      font-family:var(--police-corps);
+      font-size:0.875rem; font-weight:300; line-height:1.65;
+      padding:1rem 1.1rem; resize:none; outline:none;
+      transition:border-color var(--transition), box-shadow var(--transition);
     }
+    #pitch-text:focus {
+      border-color:rgba(0,136,204,0.45);
+      box-shadow:0 0 0 4px rgba(0,136,204,0.07);
+    }
+    #pitch-text.recording {
+      border-color:rgba(0,179,136,0.50);
+      box-shadow:0 0 0 4px rgba(0,179,136,0.07);
+    }
+    #pitch-text::placeholder { color:var(--texte-muet); font-style:italic; }
 
-    /* ================================================================
-       SCREEN 1 — PITCH
-       ================================================================ */
-    #screen-pitch .hd { margin-bottom: 1.25rem; }
+    /* Méta sous textarea */
+    .pitch-meta {
+      display:flex; justify-content:flex-end;
+      margin-top:0.35rem; margin-bottom:0.75rem;
+    }
+    .word-count { font-size:0.72rem; color:var(--texte-muet); }
 
-    /* Minuteur */
-    #timer-wrap { margin-bottom: 0.85rem; }
-
+    /* Timer compact (visible uniquement pendant la dictée) */
+    .timer-strip {
+      display:none; align-items:center; gap:0.6rem;
+      padding:0.45rem 0.75rem;
+      background:rgba(0,179,136,0.06);
+      border:1px solid rgba(0,179,136,0.15);
+      border-radius:8px; margin-bottom:0.75rem;
+    }
+    .timer-strip.on { display:flex; }
+    .rec-dot {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--menthe); flex-shrink:0;
+      animation:blink 1s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
     .timer-bar-bg {
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
-      overflow: hidden;
+      flex:1; height:3px;
+      background:rgba(255,255,255,0.08);
+      border-radius:2px; overflow:hidden;
     }
     .timer-bar {
-      height: 100%;
-      width: 100%;
-      background: var(--cerulean);
-      border-radius: 2px;
-      transition: width 1s linear, background 0.35s;
+      height:100%; width:100%;
+      background:var(--menthe); border-radius:2px;
+      transition:width 1s linear, background 0.35s;
     }
-    .timer-bar.warning { background: var(--ambre); }
-    .timer-bar.danger  { background: var(--ocre); }
-
-    .timer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-top: 0.35rem;
-    }
-    .timer-hint {
-      font-size: 0.73rem;
-      font-weight: 300;
-      color: var(--texte-muet);
-    }
+    .timer-bar.warning { background:var(--ambre); }
+    .timer-bar.danger  { background:var(--ocre); }
     #timer-count {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: var(--sur-primaire);
-      letter-spacing: -0.01em;
-      font-variant-numeric: tabular-nums;
+      font-size:0.78rem; font-weight:500; color:var(--menthe);
+      font-variant-numeric:tabular-nums; min-width:2.2rem; text-align:right;
     }
 
-    /* Zone microphone */
-    .mic-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0.75rem 0 0.9rem;
-    }
-    .mic-btn-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 120px; height: 120px;
-      margin-bottom: 0.55rem;
+    /* Boutons d'action */
+    .action-row {
+      display:grid; grid-template-columns:auto 1fr;
+      gap:0.65rem; margin-bottom:1.25rem;
     }
 
-    /* Anneaux idle (cerulean) */
-    .pulse-ring {
-      position: absolute;
-      width: 88px; height: 88px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(0, 136, 204, 0.38);
-      animation: pulseIdle 2.2s ease-out infinite;
+    .btn-dictee {
+      display:flex; align-items:center; justify-content:center; gap:0.5rem;
+      padding:0.82rem 1.1rem; border-radius:12px;
+      border:1.5px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.04);
+      color:var(--texte-secondaire);
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:all var(--transition); white-space:nowrap;
     }
-    .pulse-ring:nth-child(2) { animation-delay: 0.7s; }
-    .pulse-ring:nth-child(3) { animation-delay: 1.4s; }
-    @keyframes pulseIdle {
-      0%   { transform: scale(0.8); opacity: 0.7; }
-      100% { transform: scale(2.0); opacity: 0; }
+    .btn-dictee:hover {
+      border-color:rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.07);
+      color:var(--texte-primaire);
     }
+    .btn-dictee:active { transform:scale(0.97); }
+    .btn-dictee.recording {
+      border-color:rgba(0,179,136,0.45);
+      background:rgba(0,179,136,0.08);
+      color:var(--menthe);
+    }
+    .btn-dictee svg { width:17px; height:17px; flex-shrink:0; }
 
-    /* Anneaux enregistrement (menthe) */
-    .wave-ring {
-      display: none;
-      position: absolute;
-      width: 88px; height: 88px;
-      border-radius: 50%;
-      background: rgba(0, 179, 136, 0.10);
-      animation: waveAnim 1.4s ease-out infinite;
+    .btn-analyser {
+      display:flex; align-items:center; justify-content:center; gap:0.5rem;
+      padding:0.82rem 1.25rem; border-radius:12px; border:none;
+      background:var(--cerulean); color:#fff;
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:all var(--transition);
+      box-shadow:0 4px 16px rgba(0,136,204,0.28);
     }
-    .wave-ring:nth-child(5) { animation-delay: 0.35s; }
-    .wave-ring:nth-child(6) { animation-delay: 0.7s; }
-    @keyframes waveAnim {
-      0%   { transform: scale(0.85); opacity: 0.6; }
-      100% { transform: scale(2.4); opacity: 0; }
+    .btn-analyser:hover {
+      background:#009adb;
+      box-shadow:0 6px 20px rgba(0,136,204,0.38);
+      transform:translateY(-1px);
     }
-
-    #btn-mic {
-      position: relative;
-      z-index: 10;
-      width: 84px; height: 84px;
-      border-radius: 50%;
-      border: none;
-      background: var(--cerulean);
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
-      box-shadow: 0 0 0 7px rgba(0, 136, 204, 0.14), 0 8px 28px rgba(0, 0, 0, 0.30);
+    .btn-analyser:active { transform:scale(0.98) translateY(0); }
+    .btn-analyser:disabled {
+      opacity:0.4; cursor:not-allowed;
+      transform:none; box-shadow:none;
     }
-    #btn-mic:active { transform: scale(0.94); }
-    #btn-mic.recording {
-      background: var(--menthe);
-      box-shadow: 0 0 0 7px rgba(0, 179, 136, 0.14), 0 8px 28px rgba(0, 0, 0, 0.30);
-    }
-    #btn-mic svg { width: 34px; height: 34px; }
-
-    .mic-label {
-      font-size: 0.78rem;
-      font-weight: 300;
-      color: var(--texte-muet);
-      transition: color var(--transition);
-    }
-    .mic-label.rec { color: var(--menthe); }
-
-    /* Transcription */
-    .transcript-card {
-      min-height: 72px;
-      max-height: 120px;
-      overflow-y: auto;
-      margin-bottom: 0.7rem;
-      scroll-behavior: smooth;
-    }
-    .transcript-card p {
-      font-size: 0.84rem;
-      font-weight: 300;
-      line-height: 1.6;
-      color: var(--texte-secondaire);
-    }
-    .transcript-card .ph {
-      color: var(--texte-muet);
-      font-style: italic;
-      font-size: 0.8rem;
-    }
-
-    /* Saisie manuelle (fallback) */
-    #manual-wrap { margin-bottom: 0.7rem; }
-    #manual-wrap .note {
-      font-size: 0.78rem;
-      font-weight: 300;
-      color: var(--texte-secondaire);
-      margin-bottom: 0.4rem;
-    }
-    #manual-text {
-      width: 100%;
-      background: var(--carte-fond);
-      border: none;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.12);
-      border-radius: 4px 4px 0 0;
-      color: var(--sur-primaire);
-      font-family: var(--police-corps);
-      font-size: 0.84rem;
-      font-weight: 300;
-      padding: 0.7rem 0.85rem;
-      resize: none;
-      min-height: 90px;
-      outline: none;
-      transition: border-bottom-color var(--transition);
-    }
-    #manual-text:focus { border-bottom-color: var(--cerulean); }
-    #manual-text::placeholder { color: var(--texte-muet); }
+    .btn-analyser svg { width:17px; height:17px; flex-shrink:0; }
 
     /* Checklist */
     .checklist-hd {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--texte-muet);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.45rem;
+      font-size:11px; font-weight:500; color:var(--texte-muet);
+      text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.45rem;
     }
-    .checklist {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      margin-bottom: 0.8rem;
-    }
-
+    .checklist { display:flex; flex-direction:column; gap:0.28rem; margin-bottom:0.8rem; }
     .check-item {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.48rem 0.75rem;
-      border-radius: 8px;
-      background: var(--carte-fond);
-      border: 1px solid var(--carte-bord);
-      font-size: 0.8rem;
-      font-weight: 300;
-      color: var(--texte-secondaire);
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      display:flex; align-items:center; gap:0.6rem;
+      padding:0.48rem 0.75rem; border-radius:8px;
+      background:var(--carte-fond); border:1px solid var(--carte-bord);
+      font-size:0.8rem; font-weight:300; color:var(--texte-secondaire);
+      transition:background var(--transition), border-color var(--transition), color var(--transition);
     }
     .check-item.checked {
-      background: rgba(0, 179, 136, 0.10);
-      border-color: rgba(0, 179, 136, 0.24);
-      color: var(--texte-primaire);
-      animation: checkPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background:rgba(0,179,136,0.10); border-color:rgba(0,179,136,0.24);
+      color:var(--texte-primaire);
+      animation:checkPop 0.38s cubic-bezier(0.34,1.56,0.64,1);
     }
-    @keyframes checkPop {
-      0%   { transform: scale(1); }
-      45%  { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
+    @keyframes checkPop { 0%{transform:scale(1)} 45%{transform:scale(1.03)} 100%{transform:scale(1)} }
     .chk-icon {
-      flex-shrink: 0;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(255, 255, 255, 0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      color: transparent;
-      transition: all var(--transition);
+      flex-shrink:0; width:18px; height:18px; border-radius:50%;
+      border:1.5px solid rgba(255,255,255,0.18);
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.6rem; color:transparent; transition:all var(--transition);
     }
     .check-item.checked .chk-icon {
-      background: var(--menthe);
-      border-color: var(--menthe);
-      color: #fff;
+      background:var(--menthe); border-color:var(--menthe); color:#fff;
     }
 
-    /* Bouton — terminer le pitch */
-    #btn-finish {
-      display: none;
-      width: 100%;
-      padding: 0.82rem 1.5rem;
-      border-radius: 0.375rem;
-      border: none;
-      background: var(--primaire-conteneur);
-      color: var(--sur-primaire-conteneur);
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: background var(--transition), transform var(--transition);
-      margin-top: auto;
-    }
-    #btn-finish:hover  { background: var(--cerulean); color: var(--sur-primaire); }
-    #btn-finish:active { transform: scale(0.98); }
-
-    /* ================================================================
-       SCREEN 2 — VÉRIFICATION
-       ================================================================ */
-    #screen-review .hd { margin-bottom: 0.9rem; }
+    /* ── SCREEN 2 ── REVIEW ─────────────────────────────────────── */
+    #screen-review .hd { margin-bottom:0.9rem; }
 
     .score-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(238, 212, 132, 0.08);
-      border: 1px solid rgba(238, 212, 132, 0.22);
-      border-radius: 2rem;
-      padding: 0.28rem 0.75rem;
-      font-size: 0.76rem;
-      font-weight: 500;
-      color: var(--ambre);
-      margin-bottom: 0.85rem;
+      display:inline-flex; align-items:center; gap:0.4rem;
+      background:rgba(238,212,132,0.08); border:1px solid rgba(238,212,132,0.22);
+      border-radius:2rem; padding:0.28rem 0.75rem;
+      font-size:0.76rem; font-weight:500; color:var(--ambre); margin-bottom:0.85rem;
     }
-
-    .field-group { margin-bottom: 0.65rem; }
+    .field-group { margin-bottom:0.65rem; }
     .field-group label {
-      display: block;
-      font-size: 0.76rem;
-      font-weight: 400;
-      color: var(--texte-secondaire);
-      margin-bottom: 0.28rem;
+      display:block; font-size:0.76rem; font-weight:400;
+      color:var(--texte-secondaire); margin-bottom:0.28rem;
     }
     .field-group input,
     .field-group select,
     .field-group textarea {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: none;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.11);
-      border-radius: 4px 4px 0 0;
-      color: var(--sur-primaire);
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 300;
-      padding: 0.62rem 0.82rem;
-      outline: none;
-      transition: background var(--transition), border-bottom-color var(--transition);
-      -webkit-appearance: none;
-      appearance: none;
+      width:100%; background:rgba(255,255,255,0.05);
+      border:none; border-bottom:2px solid rgba(255,255,255,0.11);
+      border-radius:4px 4px 0 0; color:var(--sur-primaire);
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:300;
+      padding:0.62rem 0.82rem; outline:none;
+      transition:background var(--transition), border-bottom-color var(--transition);
+      -webkit-appearance:none; appearance:none;
     }
     .field-group select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath fill='%23ffffff55' d='M5.5 7L0 0h11z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 0.82rem center;
-      background-color: rgba(255, 255, 255, 0.05);
-      padding-right: 2rem;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath fill='%23ffffff55' d='M5.5 7L0 0h11z'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 0.82rem center;
+      background-color:rgba(255,255,255,0.05); padding-right:2rem;
     }
-    .field-group select option { background: var(--sombre-fond-moyen); color: #fff; }
+    .field-group select option { background:var(--sombre-fond-moyen); color:#fff; }
     .field-group input:focus,
     .field-group select:focus,
     .field-group textarea:focus {
-      background: rgba(255, 255, 255, 0.08);
-      border-bottom-color: var(--cerulean);
+      background:rgba(255,255,255,0.08); border-bottom-color:var(--cerulean);
     }
     .field-group input::placeholder,
-    .field-group textarea::placeholder { color: var(--texte-muet); }
-    .field-group textarea { resize: none; min-height: 78px; line-height: 1.55; }
+    .field-group textarea::placeholder { color:var(--texte-muet); }
+    .field-group textarea { resize:none; min-height:78px; line-height:1.55; }
+    .lbl-req::after { content:' *'; color:var(--ocre); }
+    .err-msg { font-size:0.73rem; font-weight:400; color:var(--ocre); margin-top:0.22rem; display:none; }
+    .err-msg.on { display:block; }
 
-    .lbl-req::after { content: ' *'; color: var(--ocre); }
-
-    .err-msg {
-      font-size: 0.73rem;
-      font-weight: 400;
-      color: var(--ocre);
-      margin-top: 0.22rem;
-      display: none;
-    }
-    .err-msg.on { display: block; }
-
-    /* Bouton — soumettre */
     #btn-submit {
-      width: 100%;
-      padding: 0.92rem 1.5rem;
-      border-radius: 0.375rem;
-      border: none;
-      background: var(--cerulean);
-      color: var(--sur-primaire);
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: background var(--transition), transform var(--transition);
-      margin-top: 0.5rem;
+      width:100%; padding:0.92rem 1.5rem; border-radius:12px; border:none;
+      background:var(--cerulean); color:var(--sur-primaire);
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:all var(--transition); margin-top:0.5rem;
+      box-shadow:0 4px 16px rgba(0,136,204,0.28);
     }
-    #btn-submit:hover   { background: var(--primaire-conteneur); }
-    #btn-submit:active  { transform: scale(0.98); }
-    #btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+    #btn-submit:hover { background:#009adb; box-shadow:0 6px 20px rgba(0,136,204,0.38); }
+    #btn-submit:active { transform:scale(0.98); }
+    #btn-submit:disabled { opacity:0.45; cursor:not-allowed; }
 
-    /* ================================================================
-       SCREEN 3 — MERCI
-       ================================================================ */
+    /* ── SCREEN 3 ── MERCI ──────────────────────────────────────── */
     #screen-thanks {
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 1.6rem;
+      align-items:center; justify-content:center;
+      text-align:center; gap:1.6rem;
     }
-
     .thanks-icon {
-      width: 78px; height: 78px;
-      border-radius: 50%;
-      background: rgba(0, 179, 136, 0.10);
-      border: 2px solid var(--menthe);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: successPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
+      width:78px; height:78px; border-radius:50%;
+      background:rgba(0,179,136,0.10); border:2px solid var(--menthe);
+      display:flex; align-items:center; justify-content:center;
+      animation:successPop 0.48s cubic-bezier(0.34,1.56,0.64,1);
     }
-    @keyframes successPop {
-      0%   { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .thanks-icon svg { width: 38px; height: 38px; color: var(--menthe); }
-
+    @keyframes successPop { 0%{transform:scale(0);opacity:0} 100%{transform:scale(1);opacity:1} }
+    .thanks-icon svg { width:38px; height:38px; color:var(--menthe); }
     .score-display {
-      background: rgba(238, 212, 132, 0.06);
-      border: 1px solid rgba(238, 212, 132, 0.18);
-      border-radius: 14px;
-      padding: 1.1rem 2rem;
-      width: 100%;
+      background:rgba(238,212,132,0.06); border:1px solid rgba(238,212,132,0.18);
+      border-radius:14px; padding:1.1rem 2rem; width:100%;
     }
     .score-num {
-      font-family: var(--police-display);
-      font-size: 2.6rem;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      color: var(--ambre);
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
+      font-family:var(--police-display); font-size:2.6rem; font-weight:500;
+      letter-spacing:-0.02em; color:var(--ambre); line-height:1;
+      font-variant-numeric:tabular-nums;
     }
-    .score-denom { font-size: 1.1rem; color: var(--texte-muet); font-weight: 300; }
-    .score-lbl   { font-size: 0.82rem; font-weight: 300; color: var(--texte-secondaire); margin-top: 0.3rem; }
-
-    /* Bouton — nouveau pitch */
+    .score-denom { font-size:1.1rem; color:var(--texte-muet); font-weight:300; }
+    .score-lbl { font-size:0.82rem; font-weight:300; color:var(--texte-secondaire); margin-top:0.3rem; }
     #btn-restart {
-      width: 100%;
-      max-width: 260px;
-      padding: 0.88rem 1.5rem;
-      border-radius: 0.375rem;
-      border: 1.5px solid var(--cerulean);
-      background: transparent;
-      color: var(--cerulean);
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: background var(--transition), color var(--transition);
+      width:100%; max-width:260px; padding:0.88rem 1.5rem;
+      border-radius:12px; border:1.5px solid var(--cerulean);
+      background:transparent; color:var(--cerulean);
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:all var(--transition);
     }
-    #btn-restart:hover  { background: var(--cerulean); color: var(--sur-primaire); }
-    #btn-restart:active { background: var(--cerulean); color: #fff; }
+    #btn-restart:hover { background:var(--cerulean); color:#fff; }
 
-    /* Pied de page FAN */
-    .fan-footer {
-      margin-top: 1.5rem;
-      text-align: center;
-    }
+    /* Pied FAN */
+    .fan-footer { margin-top:1.5rem; text-align:center; }
     .fan-footer-filet {
-      width: 160px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--cerulean), var(--ambre), var(--menthe));
-      margin: 0 auto 1rem;
-      border-radius: 2px;
+      width:160px; height:3px;
+      background:linear-gradient(90deg,var(--cerulean),var(--ambre),var(--menthe));
+      margin:0 auto 1rem; border-radius:2px;
     }
     .fan-footer-titre {
-      font-family: var(--police-display);
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--ambre);
-      letter-spacing: 0.02em;
+      font-family:var(--police-display); font-size:0.8125rem;
+      font-weight:500; color:var(--ambre); letter-spacing:0.02em;
     }
     .fan-footer-sous {
-      font-family: var(--police-corps);
-      font-size: 0.75rem;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.30);
-      margin-top: 0.25rem;
+      font-size:0.75rem; font-weight:300;
+      color:rgba(255,255,255,0.30); margin-top:0.25rem;
     }
 
-    /* ================================================================
-       MODAL — clé API (bottom sheet)
-       ================================================================ */
+    /* ── MODAL ──────────────────────────────────────────────────── */
     .modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(5px);
-      z-index: 200;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0 0 env(safe-area-inset-bottom);
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.55); backdrop-filter:blur(5px);
+      z-index:200; align-items:flex-end; justify-content:center;
     }
-    .modal-bg.open { display: flex; }
+    .modal-bg.open { display:flex; }
     .modal-sheet {
-      background: var(--sombre-fond-moyen);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      border-radius: 14px 14px 0 0;
-      padding: 1.5rem 1.25rem 2rem;
-      width: 100%;
-      max-width: 480px;
-      animation: slideUp 0.28s ease;
+      background:var(--sombre-fond-moyen);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px 14px 0 0;
+      padding:1.5rem 1.25rem 2rem; width:100%; max-width:480px;
+      animation:slideUp 0.28s ease;
     }
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to   { transform: translateY(0);    opacity: 1; }
-    }
-    .modal-sheet h2 {
-      font-family: var(--police-display);
-      font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.45rem;
-    }
+    @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-sheet h2 { font-size:1rem; font-weight:500; margin-bottom:0.45rem; }
     .modal-sheet p {
-      font-size: 0.8rem;
-      font-weight: 300;
-      color: var(--texte-secondaire);
-      margin-bottom: 0.9rem;
-      line-height: 1.55;
+      font-size:0.8rem; font-weight:300; color:var(--texte-secondaire);
+      margin-bottom:0.9rem; line-height:1.55;
     }
     #input-api-key {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: none;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.12);
-      border-radius: 4px 4px 0 0;
-      color: var(--sur-primaire);
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 300;
-      padding: 0.68rem 0.9rem;
-      outline: none;
-      margin-bottom: 0.7rem;
-      transition: border-bottom-color var(--transition);
+      width:100%; background:rgba(255,255,255,0.05);
+      border:none; border-bottom:2px solid rgba(255,255,255,0.12);
+      border-radius:4px 4px 0 0; color:var(--sur-primaire);
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:300;
+      padding:0.68rem 0.9rem; outline:none; margin-bottom:0.7rem;
+      transition:border-bottom-color var(--transition);
     }
-    #input-api-key:focus { border-bottom-color: var(--cerulean); }
-    #input-api-key::placeholder { color: var(--texte-muet); }
-
+    #input-api-key:focus { border-bottom-color:var(--cerulean); }
+    #input-api-key::placeholder { color:var(--texte-muet); }
     #btn-save-key {
-      width: 100%;
-      padding: 0.82rem 1.5rem;
-      border-radius: 0.375rem;
-      border: none;
-      background: var(--cerulean);
-      color: var(--sur-primaire);
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: background var(--transition);
+      width:100%; padding:0.82rem 1.5rem; border-radius:12px; border:none;
+      background:var(--cerulean); color:var(--sur-primaire);
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:background var(--transition);
     }
-    #btn-save-key:hover  { background: var(--primaire-conteneur); }
-    #btn-save-key:active { opacity: 0.82; }
+    #btn-save-key:hover { background:#009adb; }
 
-    /* ================================================================
-       OVERLAY — analyse en cours
-       ================================================================ */
+    /* ── OVERLAY ────────────────────────────────────────────────── */
     #overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 32, 91, 0.88);
-      backdrop-filter: blur(8px);
-      z-index: 150;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 1rem;
+      display:none; position:fixed; inset:0;
+      background:rgba(0,32,91,0.88); backdrop-filter:blur(8px);
+      z-index:150; align-items:center; justify-content:center;
+      flex-direction:column; gap:1rem;
     }
-    #overlay.on { display: flex; }
-
+    #overlay.on { display:flex; }
     .spinner {
-      width: 42px; height: 42px;
-      border: 2.5px solid rgba(255, 255, 255, 0.10);
-      border-top-color: var(--cerulean);
-      border-radius: 50%;
-      animation: spin 0.75s linear infinite;
+      width:42px; height:42px;
+      border:2.5px solid rgba(255,255,255,0.10);
+      border-top-color:var(--cerulean); border-radius:50%;
+      animation:spin 0.75s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #overlay-msg {
-      font-size: 0.875rem;
-      font-weight: 300;
-      color: var(--texte-secondaire);
-    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    #overlay-msg { font-size:0.875rem; font-weight:300; color:var(--texte-secondaire); }
 
-    /* ================================================================
-       TOAST — notification contextuelle
-       ================================================================ */
+    /* ── TOAST ──────────────────────────────────────────────────── */
     #toast {
-      position: fixed;
-      bottom: 1.4rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(130%);
-      background: var(--sombre-fond-moyen);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      border-radius: 0.375rem;
-      padding: 0.58rem 1.15rem;
-      font-size: 0.8rem;
-      font-weight: 300;
-      color: var(--texte-primaire);
-      z-index: 300;
-      transition: transform 0.28s ease;
-      white-space: nowrap;
-      pointer-events: none;
-      max-width: calc(100vw - 2.5rem);
-      text-overflow: ellipsis;
-      overflow: hidden;
+      position:fixed; bottom:1.4rem; left:50%;
+      transform:translateX(-50%) translateY(130%);
+      background:var(--sombre-fond-moyen);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:0.375rem; padding:0.58rem 1.15rem;
+      font-size:0.8rem; font-weight:300; color:var(--texte-primaire);
+      z-index:300; transition:transform 0.28s ease;
+      white-space:nowrap; pointer-events:none;
+      max-width:calc(100vw - 2.5rem);
+      overflow:hidden; text-overflow:ellipsis;
     }
-    #toast.show { transform: translateX(-50%) translateY(0); }
-    #toast.ok   { border-color: rgba(0, 179, 136, 0.35); }
-    #toast.bad  { border-color: rgba(220, 88, 42, 0.35); }
+    #toast.show { transform:translateX(-50%) translateY(0); }
+    #toast.ok  { border-color:rgba(0,179,136,0.35); }
+    #toast.bad { border-color:rgba(220,88,42,0.35); }
 
-    /* ================================================================
-       UTILITAIRES
-       ================================================================ */
-    .hidden { display: none !important; }
-    .mt-auto { margin-top: auto; }
-
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 2px; }
+    /* ── UTILS ──────────────────────────────────────────────────── */
+    .hidden { display:none !important; }
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.12); border-radius:2px; }
   </style>
 </head>
 <body>
 
-<!-- ================================================================
-     TOPBAR — identité NOVA / FAN
-     ================================================================ -->
 <header class="topbar" role="banner">
   <span class="topbar-logo">NOVA</span>
   <span class="eyebrow">
@@ -799,72 +463,61 @@
 
 
 <!-- ================================================================
-     SCREEN 1 — PITCHEZ VOTRE SOLUTION
+     SCREEN 1 — PITCH
      ================================================================ -->
 <main id="screen-pitch" class="screen active" role="main">
   <div class="hd">
     <div class="badge">SNCF × VivaTech 2026</div>
-    <h1>Votre train d'idées part dans 90 secondes</h1>
-    <p class="subtitle">Pitchez votre solution — l'IA vérifie en temps réel que vous couvrez les points essentiels.</p>
+    <h1>Pitchez votre solution</h1>
+    <p class="subtitle">Dictez ou rédigez votre pitch — l'IA vérifie en direct les 8 points essentiels.</p>
   </div>
 
-  <!-- Minuteur (masqué jusqu'au démarrage de l'enregistrement) -->
-  <div id="timer-wrap" class="hidden">
+  <!-- Zone de texte principale — toujours éditable -->
+  <textarea
+    id="pitch-text"
+    placeholder="Décrivez votre solution : le problème résolu, votre cible, votre technologie clé, votre avantage concurrentiel, votre stade de maturité et votre lien avec le ferroviaire…"
+    aria-label="Texte du pitch"
+  ></textarea>
+
+  <div class="pitch-meta">
+    <span class="word-count" id="word-count">0 mot</span>
+  </div>
+
+  <!-- Timer (visible uniquement pendant la dictée) -->
+  <div class="timer-strip" id="timer-strip">
+    <div class="rec-dot"></div>
     <div class="timer-bar-bg">
       <div id="timer-bar" class="timer-bar"></div>
     </div>
-    <div class="timer-row">
-      <span class="timer-hint">Temps restant</span>
-      <span id="timer-count">1:30</span>
-    </div>
+    <span id="timer-count">1:30</span>
   </div>
 
-  <!-- Bouton microphone -->
-  <div class="mic-zone">
-    <div class="mic-btn-wrap">
-      <!-- Anneaux idle (cerulean) -->
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring"></div>
-      <!-- Anneaux enregistrement (menthe) -->
-      <div class="wave-ring"></div>
-      <div class="wave-ring"></div>
-      <div class="wave-ring"></div>
-      <button id="btn-mic" aria-label="Démarrer l'enregistrement">
-        <!-- Icône micro — visible à l'arrêt -->
-        <svg id="ico-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8"  y1="23" x2="16" y2="23"/>
-        </svg>
-        <!-- Icône stop — visible en enregistrement -->
-        <svg id="ico-stop" class="hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <rect x="6" y="6" width="12" height="12" rx="2.5"/>
-        </svg>
-      </button>
-    </div>
-    <span id="mic-label" class="mic-label">Appuyer pour pitcher</span>
+  <!-- Boutons d'action -->
+  <div class="action-row">
+    <button id="btn-mic" class="btn-dictee" aria-label="Démarrer la dictée">
+      <svg id="ico-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8"  y1="23" x2="16" y2="23"/>
+      </svg>
+      <svg id="ico-stop" class="hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <rect x="6" y="6" width="12" height="12" rx="2"/>
+      </svg>
+      <span id="mic-label">Dictée</span>
+    </button>
+
+    <button id="btn-analyze" class="btn-analyser" aria-label="Analyser le pitch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      Analyser
+    </button>
   </div>
 
-  <!-- Transcription en direct (Web Speech API) -->
-  <div id="transcript-card" class="card transcript-card" aria-live="polite" aria-label="Transcription en temps réel">
-    <p class="ph" id="transcript-ph">Votre transcription apparaîtra ici en temps réel…</p>
-    <p id="transcript-txt" class="hidden"></p>
-  </div>
-
-  <!-- Saisie manuelle (fallback si Web Speech API indisponible) -->
-  <div id="manual-wrap" class="hidden">
-    <p class="note">La reconnaissance vocale n'est pas disponible sur cet appareil.<br>Saisissez votre pitch ci-dessous :</p>
-    <textarea id="manual-text" placeholder="Décrivez votre solution, le problème qu'elle résout, votre cible, votre technologie clé…" aria-label="Texte du pitch"></textarea>
-  </div>
-
-  <!-- Checklist 8 points — cochée automatiquement par l'IA -->
+  <!-- Checklist 8 points — mise à jour par l'IA -->
   <p class="checklist-hd">Points essentiels</p>
   <div id="cl1" class="checklist" role="list" aria-label="Points essentiels du pitch"></div>
-
-  <!-- Bouton de fin anticipée (visible uniquement pendant l'enregistrement) -->
-  <button id="btn-finish" aria-label="Terminer l'enregistrement maintenant">J'ai terminé →</button>
 </main>
 
 
@@ -882,14 +535,12 @@
     <span id="score-txt">0/8 points couverts</span>
   </div>
 
-  <!-- Champs pré-remplis par l'IA -->
   <p class="section-label">Votre solution</p>
 
   <div class="field-group">
     <label for="f-solution">Nom de la solution / startup</label>
     <input id="f-solution" type="text" placeholder="ex. RailSense" autocomplete="organization">
   </div>
-
   <div class="field-group">
     <label for="f-domaine">Domaine d'application</label>
     <select id="f-domaine">
@@ -905,7 +556,6 @@
       <option>Autre</option>
     </select>
   </div>
-
   <div class="field-group">
     <label for="f-techno">Technologie principale</label>
     <select id="f-techno">
@@ -921,7 +571,6 @@
       <option>Autre</option>
     </select>
   </div>
-
   <div class="field-group">
     <label for="f-maturite">Stade de maturité</label>
     <select id="f-maturite">
@@ -933,17 +582,14 @@
       <option>Scale-up</option>
     </select>
   </div>
-
   <div class="field-group">
     <label for="f-resume">Résumé du pitch (2-3 phrases)</label>
     <textarea id="f-resume" placeholder="Généré par l'IA — éditez si besoin…"></textarea>
   </div>
 
-  <!-- Récapitulatif de la checklist -->
   <p class="section-label">Points couverts</p>
   <div id="cl2" class="checklist" style="margin-bottom:1rem" role="list" aria-label="Points essentiels couverts"></div>
 
-  <!-- Coordonnées -->
   <p class="section-label">Vos coordonnées</p>
 
   <div class="field-group">
@@ -951,24 +597,20 @@
     <input id="f-nom" type="text" placeholder="Prénom Nom" autocomplete="name">
     <span class="err-msg" id="err-nom">Ce champ est requis.</span>
   </div>
-
   <div class="field-group">
     <label for="f-entreprise" class="lbl-req">Nom de l'entreprise</label>
     <input id="f-entreprise" type="text" placeholder="Ma Startup SAS" autocomplete="organization">
     <span class="err-msg" id="err-entreprise">Ce champ est requis.</span>
   </div>
-
   <div class="field-group">
     <label for="f-email" class="lbl-req">Email</label>
     <input id="f-email" type="email" placeholder="vous@startup.com" autocomplete="email">
     <span class="err-msg" id="err-email">Adresse email invalide.</span>
   </div>
-
   <div class="field-group">
     <label for="f-tel">Téléphone (optionnel)</label>
     <input id="f-tel" type="tel" placeholder="+33 6 00 00 00 00" autocomplete="tel">
   </div>
-
   <div class="field-group">
     <label for="f-url">LinkedIn / Site web (optionnel)</label>
     <input id="f-url" type="url" placeholder="https://…" autocomplete="url">
@@ -1000,7 +642,6 @@
 
   <button id="btn-restart">Nouveau pitch</button>
 
-  <!-- Signature FAN -->
   <div class="fan-footer">
     <div class="fan-footer-filet"></div>
     <div class="fan-footer-titre">Fabrique de l'Adoption Numérique</div>
@@ -1009,115 +650,69 @@
 </main>
 
 
-<!-- ================================================================
-     OVERLAY — analyse IA en cours
-     ================================================================ -->
+<!-- Overlay analyse IA -->
 <div id="overlay" role="status" aria-live="polite">
   <div class="spinner"></div>
   <p id="overlay-msg">L'IA analyse votre pitch…</p>
 </div>
 
-
-<!-- ================================================================
-     MODAL — clé API Anthropic (bottom sheet)
-     Affiché au premier lancement si pas de ?key= dans l'URL
-     ================================================================ -->
+<!-- Modal clé API -->
 <div id="modal-key" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modal-key-title">
   <div class="modal-sheet">
     <h2 id="modal-key-title">Clé API Anthropic</h2>
-    <p>
-      Pour analyser votre pitch en temps réel, une clé API Anthropic est nécessaire.
-      Elle sera uniquement conservée durant cette session et ne sera jamais transmise à un tiers.
-    </p>
+    <p>Pour analyser votre pitch en temps réel, une clé API Anthropic est nécessaire. Elle est conservée uniquement durant cette session.</p>
     <input id="input-api-key" type="password" placeholder="sk-ant-api03-…" aria-label="Clé API Anthropic" autocomplete="off" spellcheck="false">
     <button id="btn-save-key">Continuer →</button>
   </div>
 </div>
 
-
-<!-- Toast de notification -->
 <div id="toast" role="status" aria-live="polite"></div>
 
 
 <script>
 /* ================================================================
-   NOVA — Pitch Intelligence
-   Fabrique de l'Adoption Numérique (FAN) × SNCF × VivaTech 2026
-   Vanilla JS, zéro dépendance, fichier HTML unique
+   NOVA — Pitch Intelligence · FAN × SNCF × VivaTech 2026
    ================================================================ */
 
-/* ----------------------------------------------------------------
-   CONFIGURATION — modifier avant déploiement
-   ---------------------------------------------------------------- */
-
-// Endpoint POST de réception des données
-// • Google Forms :   https://docs.google.com/forms/d/e/XXXXX/formResponse
-// • Tally.so :       https://tally.so/r/XXXXX
-// • Make webhook :   https://hook.eu1.make.com/XXXXX
-// • Power Automate : https://prod-xx.westeurope.logic.azure.com/workflows/XXXXX
-// • n8n :            https://your-n8n.com/webhook/XXXXX
-const SUBMIT_URL = 'https://your-endpoint.example.com/submit'; // ← CONFIGURER ICI
-
-// Modèle Claude utilisé
-const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
-
-// Durée maximale du pitch (secondes)
-const PITCH_DURATION = 90;
-
-// Intervalle d'analyse partielle pendant l'enregistrement (secondes)
-// 0 = désactivé (analyse uniquement à la fin du pitch)
+/* ── Configuration ──────────────────────────────────────────────── */
+const SUBMIT_URL      = 'https://your-endpoint.example.com/submit';
+const CLAUDE_MODEL    = 'claude-sonnet-4-20250514';
+const PITCH_DURATION  = 90;
 const PARTIAL_INTERVAL = 20;
 
-
-/* ----------------------------------------------------------------
-   CHECKLIST — 8 questions essentielles d'un bon pitch
-   ---------------------------------------------------------------- */
+/* ── Checklist ──────────────────────────────────────────────────── */
 const ITEMS = [
-  { id: 'probleme',      q: 'Quel problème résolvez-vous ?' },
-  { id: 'cible',         q: 'Pour qui ? (client cible / utilisateur)' },
-  { id: 'solution',      q: 'Quelle est votre solution ?' },
-  { id: 'techno',        q: 'Quelle technologie / innovation clé ?' },
-  { id: 'differenciant', q: 'Quel est votre avantage concurrentiel ?' },
-  { id: 'maturite',      q: 'Quel stade de maturité ?' },
-  { id: 'lien_sncf',     q: 'Quel lien avec le ferroviaire / SNCF ?' },
-  { id: 'modele_eco',    q: 'Quel est votre modèle économique ?' },
+  { id:'probleme',      q:'Quel problème résolvez-vous ?' },
+  { id:'cible',         q:'Pour qui ? (client cible / utilisateur)' },
+  { id:'solution',      q:'Quelle est votre solution ?' },
+  { id:'techno',        q:'Quelle technologie / innovation clé ?' },
+  { id:'differenciant', q:'Quel est votre avantage concurrentiel ?' },
+  { id:'maturite',      q:'Quel stade de maturité ?' },
+  { id:'lien_sncf',     q:'Quel lien avec le ferroviaire / SNCF ?' },
+  { id:'modele_eco',    q:'Quel est votre modèle économique ?' },
 ];
 
-
-/* ----------------------------------------------------------------
-   ÉTAT DE L'APPLICATION
-   ---------------------------------------------------------------- */
+/* ── État ───────────────────────────────────────────────────────── */
 const S = {
-  apiKey:          '',
-  transcript:      '',     // résultat final du speech recognition
-  interim:         '',     // texte intermédiaire (en cours de reconnaissance)
-  recording:       false,
-  timeLeft:        PITCH_DURATION,
-  timerInt:        null,
-  partialInt:      null,
-  lastAnalyzedLen: 0,
-  checks:          {},     // { [itemId]: boolean }
-  ai:              {},     // données extraites par Claude
-  speechOK:        false,  // Web Speech API disponible ?
-  rec:             null,   // SpeechRecognition instance
+  apiKey:'', transcript:'', interim:'',
+  recording:false, timeLeft:PITCH_DURATION,
+  timerInt:null, partialInt:null, lastAnalyzedLen:0,
+  checks:{}, ai:{}, speechOK:false, rec:null,
 };
 ITEMS.forEach(i => { S.checks[i.id] = false; });
 
-
-/* ----------------------------------------------------------------
-   UTILITAIRES DOM
-   ---------------------------------------------------------------- */
+/* ── Utils DOM ──────────────────────────────────────────────────── */
 const $  = id => document.getElementById(id);
 const qa = s  => document.querySelectorAll(s);
 
 function show(id) {
   qa('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  window.scrollTo({ top:0, behavior:'instant' });
 }
 
 let _toastTimer = null;
-function toast(msg, type = '', ms = 3500) {
+function toast(msg, type='', ms=3500) {
   const el = $('toast');
   el.textContent = msg;
   el.className = `toast show ${type}`;
@@ -1125,23 +720,17 @@ function toast(msg, type = '', ms = 3500) {
   _toastTimer = setTimeout(() => el.classList.remove('show'), ms);
 }
 
-function showOverlay(msg = 'L\'IA analyse votre pitch…') {
+function showOverlay(msg="L'IA analyse votre pitch…") {
   $('overlay-msg').textContent = msg;
   $('overlay').classList.add('on');
 }
 function hideOverlay() { $('overlay').classList.remove('on'); }
 
-
-/* ----------------------------------------------------------------
-   CLÉ API — BYOK PATTERN
-   Priorité : ?key= param URL → sessionStorage → modal de saisie
-   ---------------------------------------------------------------- */
+/* ── Clé API (BYOK) ─────────────────────────────────────────────── */
 function loadKey() {
-  // L'animateur peut pré-configurer la clé dans le QR code via ?key=sk-ant-xxx
   const urlKey = new URLSearchParams(location.search).get('key');
   if (urlKey) {
     sessionStorage.setItem('apk', urlKey);
-    // Sécurité : retire la clé de l'URL visible dans le navigateur
     history.replaceState({}, '', location.pathname);
     return urlKey;
   }
@@ -1167,17 +756,14 @@ function requireKey() {
   });
 }
 
-
-/* ----------------------------------------------------------------
-   CHECKLIST — construction & synchronisation
-   ---------------------------------------------------------------- */
-function buildCL(containerId) {
-  const c = $(containerId);
+/* ── Checklist ──────────────────────────────────────────────────── */
+function buildCL(cid) {
+  const c = $(cid);
   c.innerHTML = '';
   ITEMS.forEach(item => {
     const div = document.createElement('div');
     div.className = 'check-item' + (S.checks[item.id] ? ' checked' : '');
-    div.id = `${containerId}__${item.id}`;
+    div.id = `${cid}__${item.id}`;
     div.setAttribute('role', 'listitem');
     div.innerHTML = `<div class="chk-icon" aria-hidden="true">${S.checks[item.id] ? '✓' : ''}</div><span>${item.q}</span>`;
     c.appendChild(div);
@@ -1185,8 +771,7 @@ function buildCL(containerId) {
 }
 
 function syncCL() {
-  // Synchronise les deux checklists (écran 1 + écran 2) avec l'état S.checks
-  ['cl1', 'cl2'].forEach(cid => {
+  ['cl1','cl2'].forEach(cid => {
     ITEMS.forEach(item => {
       const el = $(`${cid}__${item.id}`);
       if (!el) return;
@@ -1198,22 +783,27 @@ function syncCL() {
   });
 }
 
-function checkedCount() {
-  return ITEMS.filter(i => S.checks[i.id]).length;
+function checkedCount() { return ITEMS.filter(i => S.checks[i.id]).length; }
+
+/* ── Compteur de mots ───────────────────────────────────────────── */
+function updateWordCount() {
+  const words = liveText().split(/\s+/).filter(w => w.length > 0).length;
+  $('word-count').textContent = words === 0 ? '0 mot' : words === 1 ? '1 mot' : `${words} mots`;
 }
 
-
-/* ----------------------------------------------------------------
-   MINUTEUR
-   ---------------------------------------------------------------- */
+/* ── Minuteur ───────────────────────────────────────────────────── */
 function startTimer() {
   S.timeLeft = PITCH_DURATION;
-  $('timer-wrap').classList.remove('hidden');
+  $('timer-strip').classList.add('on');
   renderTimer();
   S.timerInt = setInterval(() => {
     S.timeLeft--;
     renderTimer();
-    if (S.timeLeft <= 0) { clearInterval(S.timerInt); finishPitch(); }
+    if (S.timeLeft <= 0) {
+      clearInterval(S.timerInt); S.timerInt = null;
+      stopRecording();
+      toast('Temps écoulé — cliquez sur Analyser pour continuer.', '', 4000);
+    }
   }, 1000);
 }
 
@@ -1228,30 +818,18 @@ function renderTimer() {
 }
 
 function stopTimer() {
-  clearInterval(S.timerInt);
-  clearInterval(S.partialInt);
+  clearInterval(S.timerInt); clearInterval(S.partialInt);
   S.timerInt = S.partialInt = null;
 }
 
-
-/* ----------------------------------------------------------------
-   WEB SPEECH API — transcription en temps réel
-   Fallback : textarea manuelle si non supporté (Firefox, certains Android)
-   ---------------------------------------------------------------- */
+/* ── Web Speech API ─────────────────────────────────────────────── */
 function initSpeech() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    S.speechOK = false;
-    $('manual-wrap').classList.remove('hidden');
-    $('transcript-card').classList.add('hidden');
-    return;
-  }
+  if (!SR) { S.speechOK = false; return; }
   S.speechOK = true;
   const r = new SR();
-  r.continuous      = true;
-  r.interimResults  = true;
-  r.lang            = 'fr-FR';
-  r.maxAlternatives = 1;
+  r.continuous = true; r.interimResults = true;
+  r.lang = 'fr-FR'; r.maxAlternatives = 1;
 
   r.onresult = e => {
     let fin = '', intr = '';
@@ -1269,72 +847,45 @@ function initSpeech() {
       toast('Microphone refusé — autorisez l\'accès dans vos réglages.', 'bad', 5000);
       stopRecording();
     }
-    // 'no-speech' et 'aborted' sont normaux, on les ignore silencieusement
   };
 
-  // Les navigateurs coupent automatiquement la reconnaissance après un silence.
-  // On redémarre si l'enregistrement est toujours en cours.
   r.onend = () => { if (S.recording) { try { r.start(); } catch(_) {} } };
-
   S.rec = r;
 }
 
 function renderTranscript() {
-  const ph = $('transcript-ph');
-  const tx = $('transcript-txt');
-  const full = S.transcript
-    + (S.interim ? `<em style="color:rgba(255,255,255,0.32)">${S.interim}</em>` : '');
-  if (full) {
-    ph.classList.add('hidden');
-    tx.classList.remove('hidden');
-    tx.innerHTML = full;
-  } else {
-    ph.classList.remove('hidden');
-    tx.classList.add('hidden');
-  }
-  // Auto-scroll vers le bas
-  const card = $('transcript-card');
-  card.scrollTop = card.scrollHeight;
+  const ta = $('pitch-text');
+  ta.value = S.transcript + (S.interim || '');
+  ta.scrollTop = ta.scrollHeight;
+  updateWordCount();
 }
 
-
-/* ----------------------------------------------------------------
-   ENREGISTREMENT — démarrage / arrêt
-   ---------------------------------------------------------------- */
+/* ── Enregistrement ─────────────────────────────────────────────── */
 async function startRecording() {
-  // Demande explicite de permission micro
   try {
-    await navigator.mediaDevices.getUserMedia({ audio: true });
+    await navigator.mediaDevices.getUserMedia({ audio:true });
   } catch(_) {
     toast('Accès au microphone refusé — vérifiez vos réglages.', 'bad', 5000);
     return;
   }
 
-  S.recording      = true;
-  S.transcript     = '';
+  // Préserver le texte déjà saisi
+  S.transcript     = $('pitch-text').value;
   S.interim        = '';
-  S.lastAnalyzedLen = 0;
-  ITEMS.forEach(i => { S.checks[i.id] = false; });
+  S.recording      = true;
+  S.lastAnalyzedLen = S.transcript.length;
 
-  // UI : bouton passe en mode "stop"
   $('btn-mic').classList.add('recording');
-  $('btn-mic').setAttribute('aria-label', 'Arrêter l\'enregistrement');
+  $('btn-mic').setAttribute('aria-label', 'Arrêter la dictée');
   $('ico-mic').classList.add('hidden');
   $('ico-stop').classList.remove('hidden');
-  $('mic-label').textContent = 'Enregistrement — appuyer pour arrêter';
-  $('mic-label').classList.add('rec');
+  $('mic-label').textContent = 'Arrêter';
+  $('pitch-text').classList.add('recording');
 
-  // Bascule des anneaux : idle → wave
-  qa('.pulse-ring').forEach(r => r.style.display = 'none');
-  qa('.wave-ring').forEach(r  => r.style.display = 'block');
-
-  $('btn-finish').style.display = 'block';
   buildCL('cl1');
   startTimer();
-
   if (S.speechOK) { try { S.rec.start(); } catch(_) {} }
 
-  // Analyse partielle toutes les PARTIAL_INTERVAL secondes
   if (PARTIAL_INTERVAL > 0) {
     S.partialInt = setInterval(async () => {
       const cur = liveText();
@@ -1347,36 +898,39 @@ async function startRecording() {
 }
 
 function stopRecording() {
+  if (!S.recording) return;
   S.recording = false;
   if (S.rec) { try { S.rec.stop(); } catch(_) {} }
+  // Finaliser le texte intermédiaire
+  if (S.interim) { S.transcript += S.interim + ' '; S.interim = ''; renderTranscript(); }
   stopTimer();
 
-  // UI : bouton repasse en mode "mic"
   $('btn-mic').classList.remove('recording');
-  $('btn-mic').setAttribute('aria-label', 'Démarrer l\'enregistrement');
+  $('btn-mic').setAttribute('aria-label', 'Démarrer la dictée');
   $('ico-mic').classList.remove('hidden');
   $('ico-stop').classList.add('hidden');
-  $('mic-label').textContent = 'Appuyer pour pitcher';
-  $('mic-label').classList.remove('rec');
-  qa('.pulse-ring').forEach(r => r.style.display = '');
-  qa('.wave-ring').forEach(r  => r.style.display = 'none');
-  $('btn-finish').style.display = 'none';
+  $('mic-label').textContent = 'Dictée';
+  $('pitch-text').classList.remove('recording');
+  $('timer-strip').classList.remove('on');
 }
 
-// Retourne le texte courant (speech ou saisie manuelle)
-function liveText() {
-  return S.speechOK ? S.transcript.trim() : $('manual-text').value.trim();
-}
+function liveText() { return $('pitch-text').value.trim(); }
 
+/* ── Analyser ───────────────────────────────────────────────────── */
 async function finishPitch() {
-  stopRecording();
+  if (S.recording) stopRecording();
+
   const txt = liveText();
   if (!txt) {
-    toast('Aucun texte détecté. Saisissez votre pitch manuellement.', 'bad', 4000);
-    if (!S.speechOK) $('manual-wrap').classList.remove('hidden');
+    toast('Saisissez ou dictez votre pitch avant d\'analyser.', 'bad', 4000);
     return;
   }
 
+  // Reset checks pour une analyse fraîche
+  ITEMS.forEach(i => { S.checks[i.id] = false; });
+
+  const btn = $('btn-analyze');
+  btn.disabled = true;
   showOverlay('L\'IA analyse votre pitch…');
   try {
     await analyzeFullPitch(txt);
@@ -1385,15 +939,11 @@ async function finishPitch() {
     toast('Analyse IA indisponible — vous pouvez compléter manuellement.', 'bad', 4500);
   }
   hideOverlay();
+  btn.disabled = false;
   goReview();
 }
 
-
-/* ----------------------------------------------------------------
-   API CLAUDE — appels Anthropic
-   ---------------------------------------------------------------- */
-
-// Analyse partielle : retourne uniquement les checks (prompt léger)
+/* ── API Claude ─────────────────────────────────────────────────── */
 async function analyzePartial(txt) {
   if (!S.apiKey) return;
   const r = await callClaude(promptPartial(txt));
@@ -1403,7 +953,6 @@ async function analyzePartial(txt) {
   }
 }
 
-// Analyse complète : checks + extraction des données pour pré-remplissage
 async function analyzeFullPitch(txt) {
   if (!S.apiKey) return;
   const r = await callClaude(promptFull(txt));
@@ -1413,50 +962,34 @@ async function analyzeFullPitch(txt) {
   syncCL();
 }
 
-/**
- * Appel direct à l'API Anthropic depuis le navigateur.
- * Le header `anthropic-dangerous-direct-browser-access` est requis
- * pour les appels cross-origin côté client.
- */
 async function callClaude(prompt) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': S.apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':S.apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true',
     },
-    body: JSON.stringify({
-      model:      CLAUDE_MODEL,
-      max_tokens: 1024,
-      messages:   [{ role: 'user', content: prompt }],
+    body:JSON.stringify({
+      model:CLAUDE_MODEL, max_tokens:1024,
+      messages:[{ role:'user', content:prompt }],
     }),
   });
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(`HTTP ${res.status} — ${JSON.stringify(err)}`);
   }
   const data = await res.json();
   const text = data.content?.[0]?.text || '';
-  // Extraction robuste du bloc JSON dans la réponse
   const m = text.match(/\{[\s\S]*\}/);
   if (!m) throw new Error('Pas de JSON dans la réponse Claude');
   return JSON.parse(m[0]);
 }
 
-
-/* ----------------------------------------------------------------
-   PROMPTS CLAUDE
-   ---------------------------------------------------------------- */
-
-/**
- * Prompt léger pour analyse partielle (pendant l'enregistrement).
- * Ne retourne que les 8 booléens de la checklist.
- */
+/* ── Prompts ────────────────────────────────────────────────────── */
 function promptPartial(txt) {
-  return `Tu analyses un pitch de startup en cours d'enregistrement lors de VivaTech 2026 pour SNCF.
+  return `Tu analyses un pitch de startup en cours lors de VivaTech 2026 pour SNCF.
 Détermine quels points sont DÉJÀ mentionnés, même implicitement.
 Réponds UNIQUEMENT avec du JSON valide (pas de texte avant ni après).
 
@@ -1468,21 +1001,17 @@ ${txt}
 Format exact :
 {"checks":{"probleme":true,"cible":false,"solution":true,"techno":false,"differenciant":false,"maturite":false,"lien_sncf":false,"modele_eco":false}}
 
-Critères (indulgents — si c'est implicite, marque true) :
-- probleme : un problème, douleur ou défi est évoqué
-- cible : une cible client/utilisateur est identifiable
-- solution : un produit, service ou approche est décrit
-- techno : une technologie ou innovation est mentionnée
-- differenciant : un avantage vs l'existant ou la concurrence est évoqué
-- maturite : idée / POC / MVP / produit / scaling mentionné
+Critères (indulgents — si implicite, marque true) :
+- probleme : problème, douleur ou défi évoqué
+- cible : cible client/utilisateur identifiable
+- solution : produit, service ou approche décrit
+- techno : technologie ou innovation mentionnée
+- differenciant : avantage vs l'existant ou la concurrence
+- maturite : idée/POC/MVP/produit/scaling mentionné
 - lien_sncf : lien avec ferroviaire, mobilité, transports ou SNCF
 - modele_eco : monétisation, pricing, SaaS, licence ou revenus mentionnés`;
 }
 
-/**
- * Prompt complet pour la fin du pitch.
- * Retourne les checks + les données pour pré-remplir le formulaire.
- */
 function promptFull(txt) {
   return `Tu es un expert en analyse de pitchs de startups pour l'équipe Innovation de SNCF à VivaTech 2026.
 Analyse ce pitch et extrais toutes les informations utiles.
@@ -1512,64 +1041,45 @@ Format exact :
   "resume": "résumé factuel et enthousiaste du pitch en 2-3 phrases maximum, en français"
 }
 
-Critères de check (sois indulgent — si c'est implicitement présent, marque true) :
+Critères de check (indulgent — si implicitement présent, marque true) :
 - probleme : problème, douleur ou défi existant
 - cible : cible client/utilisateur identifiable
 - solution : produit, service ou approche décrit
 - techno : technologie ou innovation mentionnée
-- differenciant : avantage différenciant vs l'existant ou la concurrence
+- differenciant : avantage différenciant vs l'existant
 - maturite : stade de développement mentionné (idée/POC/MVP/…)
 - lien_sncf : lien avec ferroviaire, mobilité, transports, SNCF
 - modele_eco : monétisation, pricing, SaaS, licence, revenus`;
 }
 
-
-/* ----------------------------------------------------------------
-   TRANSITION → SCREEN 2 (Vérifiez et complétez)
-   ---------------------------------------------------------------- */
+/* ── Transition → Screen 2 ──────────────────────────────────────── */
 function goReview() {
   const ai = S.ai;
-
-  // Pré-remplissage depuis les données Claude
   $('f-solution').value = ai.nom_solution || '';
   pickOpt('f-domaine',  ai.domaine);
   pickOpt('f-techno',   ai.technologie);
   pickOpt('f-maturite', ai.maturite);
   $('f-resume').value = ai.resume || '';
 
-  // Score pill
   const n = checkedCount();
   $('score-txt').textContent = `${n}/8 points couverts`;
-
-  // Checklist récap
   buildCL('cl2');
   show('screen-review');
 
-  // Message bienveillant si incomplet (jamais culpabilisant)
-  if (n < 8) {
-    toast(
-      `Pas d'inquiétude — ${n}/8 points couverts. Vous pouvez compléter ci-dessous.`,
-      '', 5000
-    );
-  }
+  if (n < 8) toast(`${n}/8 points couverts — complétez si besoin.`, '', 5000);
 }
 
-// Sélectionne l'option correspondante dans un <select>
 function pickOpt(id, val) {
   if (!val) return;
   const sel = $(id);
   for (const opt of sel.options) {
     if (opt.value === val || opt.text === val) { sel.value = opt.value; return; }
   }
-  // Fallback si la valeur ne correspond à aucune option connue
   const autre = sel.querySelector('option[value="Autre"]');
   if (autre) sel.value = 'Autre';
 }
 
-
-/* ----------------------------------------------------------------
-   VALIDATION & SOUMISSION DU FORMULAIRE
-   ---------------------------------------------------------------- */
+/* ── Validation & soumission ────────────────────────────────────── */
 function validate() {
   const nom    = $('f-nom').value.trim();
   const soc    = $('f-entreprise').value.trim();
@@ -1584,50 +1094,42 @@ function setErr(id, show) { $(id).classList.toggle('on', show); }
 
 async function submitPitch() {
   if (!validate()) return;
-
   const btn = $('btn-submit');
-  btn.disabled    = true;
-  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true; btn.textContent = 'Envoi en cours…';
 
   const payload = buildPayload();
   showOverlay('Envoi de votre pitch…');
 
   let sent = false;
   try {
-    // mode 'no-cors' : fire-and-forget vers webhooks sans CORS headers
     await fetch(SUBMIT_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-      mode:    'no-cors',
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify(payload),
+      mode:'no-cors',
     });
     sent = true;
-  } catch(e) {
-    console.error('[Submit]', e);
-  }
+  } catch(e) { console.error('[Submit]', e); }
 
   hideOverlay();
 
   if (!sent) {
-    // Fallback : copier le JSON dans le presse-papier
     try {
       await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
       toast('Envoi échoué — données copiées dans le presse-papier.', 'bad', 6000);
     } catch {
       toast('Envoi échoué. Contactez l\'animateur du stand.', 'bad', 6000);
     }
-    btn.disabled    = false;
-    btn.textContent = 'Envoyer mon pitch →';
+    btn.disabled = false; btn.textContent = 'Envoyer mon pitch →';
     return;
   }
-
   goThanks(payload);
 }
 
 function buildPayload() {
   return {
     timestamp: new Date().toISOString(),
-    source:    'NOVA_VivaTech2026',
+    source: 'NOVA_VivaTech2026',
     contact: {
       nom:        $('f-nom').value.trim(),
       entreprise: $('f-entreprise').value.trim(),
@@ -1651,18 +1153,12 @@ function buildPayload() {
   };
 }
 
-
-/* ----------------------------------------------------------------
-   TRANSITION → SCREEN 3 (Merci !)
-   ---------------------------------------------------------------- */
+/* ── Transition → Screen 3 ──────────────────────────────────────── */
 function goThanks(payload) {
   const prenom = payload.contact.nom.split(' ')[0] || payload.contact.nom;
   $('thanks-name').textContent = prenom;
-
   const n = payload.pitch.questions_couvertes;
   $('t-score').textContent = n;
-
-  // Messages d'encouragement calibrés selon le score (jamais négatifs)
   const msgs = [
     'Merci d\'avoir participé ! L\'équipe SNCF sera ravie d\'en apprendre plus.',
     'Merci pour votre partage — quelques éléments à compléter lors de l\'échange.',
@@ -1675,77 +1171,64 @@ function goThanks(payload) {
     'Pitch parfait — tous les points couverts.',
   ];
   $('t-encourage').textContent = msgs[Math.min(n, 8)];
-
   show('screen-thanks');
 }
 
-
-/* ----------------------------------------------------------------
-   RESET — pour le visiteur suivant
-   ---------------------------------------------------------------- */
+/* ── Reset ──────────────────────────────────────────────────────── */
 function reset() {
-  // État
-  S.transcript      = '';
-  S.interim         = '';
-  S.recording       = false;
-  S.timeLeft        = PITCH_DURATION;
-  S.ai              = {};
-  S.lastAnalyzedLen = 0;
+  S.transcript = ''; S.interim = ''; S.recording = false;
+  S.timeLeft = PITCH_DURATION; S.ai = {}; S.lastAnalyzedLen = 0;
   ITEMS.forEach(i => { S.checks[i.id] = false; });
 
-  // Écran 1
-  $('timer-wrap').classList.add('hidden');
-  $('timer-bar').style.width   = '100%';
-  $('timer-bar').className     = 'timer-bar';
+  $('pitch-text').value = '';
+  $('pitch-text').classList.remove('recording');
+  $('timer-strip').classList.remove('on');
+  $('timer-bar').style.width = '100%';
+  $('timer-bar').className = 'timer-bar';
   $('timer-count').textContent = '1:30';
-  $('btn-finish').style.display = 'none';
   $('ico-mic').classList.remove('hidden');
   $('ico-stop').classList.add('hidden');
-  $('mic-label').textContent = 'Appuyer pour pitcher';
-  $('mic-label').classList.remove('rec');
+  $('mic-label').textContent = 'Dictée';
   $('btn-mic').classList.remove('recording');
-  qa('.pulse-ring').forEach(r => r.style.display = '');
-  qa('.wave-ring').forEach(r  => r.style.display = 'none');
-  $('transcript-ph').classList.remove('hidden');
-  $('transcript-txt').classList.add('hidden');
-  $('transcript-txt').innerHTML = '';
-  $('manual-text').value = '';
+  $('btn-analyze').disabled = false;
+  updateWordCount();
 
-  // Écran 2
   ['f-solution','f-domaine','f-techno','f-maturite','f-resume',
    'f-nom','f-entreprise','f-email','f-tel','f-url'].forEach(id => {
-    const el = $(id);
-    if (el) el.value = '';
+    const el = $(id); if (el) el.value = '';
   });
-  setErr('err-nom',        false);
-  setErr('err-entreprise', false);
-  setErr('err-email',      false);
-  $('btn-submit').disabled    = false;
-  $('btn-submit').textContent = 'Envoyer mon pitch →';
-
+  setErr('err-nom', false); setErr('err-entreprise', false); setErr('err-email', false);
+  $('btn-submit').disabled = false; $('btn-submit').textContent = 'Envoyer mon pitch →';
   buildCL('cl1');
   show('screen-pitch');
 }
 
-
-/* ----------------------------------------------------------------
-   ÉVÉNEMENTS
-   ---------------------------------------------------------------- */
+/* ── Événements ─────────────────────────────────────────────────── */
 $('btn-mic').addEventListener('click', async () => {
   if (S.recording) {
-    await finishPitch();
+    stopRecording();
   } else {
     await requireKey();
     if (!S.apiKey) return;
+    if (!S.speechOK) {
+      toast('La dictée vocale n\'est pas disponible sur cet appareil. Saisissez directement votre pitch.', 'bad', 5000);
+      return;
+    }
     await startRecording();
   }
 });
 
-$('btn-finish').addEventListener('click', finishPitch);
+$('btn-analyze').addEventListener('click', async () => {
+  await requireKey();
+  if (!S.apiKey) return;
+  await finishPitch();
+});
+
 $('btn-submit').addEventListener('click', submitPitch);
 $('btn-restart').addEventListener('click', reset);
 
-// Validation inline (retour immédiat)
+$('pitch-text').addEventListener('input', updateWordCount);
+
 $('f-nom').addEventListener('input',        () => setErr('err-nom',        !$('f-nom').value.trim()));
 $('f-entreprise').addEventListener('input', () => setErr('err-entreprise', !$('f-entreprise').value.trim()));
 $('f-email').addEventListener('input', () => {
@@ -1753,13 +1236,11 @@ $('f-email').addEventListener('input', () => {
   setErr('err-email', v.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
 });
 
-
-/* ----------------------------------------------------------------
-   INITIALISATION
-   ---------------------------------------------------------------- */
+/* ── Init ───────────────────────────────────────────────────────── */
 initSpeech();
 buildCL('cl1');
-loadKey(); // absorbe silencieusement ?key= si présent dans l'URL
+loadKey();
+updateWordCount();
 </script>
 </body>
 </html>
