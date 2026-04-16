@@ -8,6 +8,13 @@ Outil de capture et d'analyse de pitchs en temps réel, propulsé par Claude (An
 
 ## Changelog
 
+### v4 — Checklist manuelle cliquable + popup merci (2026-04-16)
+
+- Les points de la checklist (screen 2) sont cliquables pour cocher/décocher manuellement les points non couverts par l'IA
+- Le score /8 se met à jour dynamiquement au clic
+- Bouton "Envoyer mon pitch" ouvre une popup modale de remerciement (centrée, animée) au lieu de naviguer vers un écran séparé
+- L'envoi webhook reste en fire-and-forget si l'URL est configurée ; sinon aucune erreur
+
 ### v3 — Refonte UX : saisie libre + deux boutons d'action (2026-04-16)
 
 - **Zone de texte centrale** toujours visible et éditable — le pitch peut être tapé ou dicté
