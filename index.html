@@ -272,6 +272,21 @@
     /* ── SCREEN 2 ── REVIEW ─────────────────────────────────────── */
     #screen-review .hd { margin-bottom:0.9rem; }
 
+    /* Checklist cliquable (screen 2) */
+    .check-item.clickable { cursor:pointer; user-select:none; }
+    .check-item.clickable:hover {
+      background:rgba(255,255,255,0.06);
+      border-color:rgba(255,255,255,0.15);
+    }
+    .check-item.clickable.checked:hover {
+      background:rgba(0,179,136,0.07);
+      border-color:rgba(0,179,136,0.20);
+    }
+    .cl-hint {
+      font-size:10px; color:var(--texte-muet);
+      text-transform:none; letter-spacing:0; font-weight:300;
+    }
+
     .score-pill {
       display:inline-flex; align-items:center; gap:0.4rem;
       background:rgba(238,212,132,0.08); border:1px solid rgba(238,212,132,0.22);
@@ -379,6 +394,39 @@
       z-index:200; align-items:flex-end; justify-content:center;
     }
     .modal-bg.open { display:flex; }
+    .modal-center { align-items:center; justify-content:center; padding:1.5rem; }
+
+    /* Modal Merci */
+    .modal-merci {
+      background:var(--sombre-fond-moyen);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:20px; padding:2rem 1.5rem;
+      width:100%; max-width:360px; text-align:center;
+      animation:popIn 0.38s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+    .merci-icon {
+      width:60px; height:60px; border-radius:50%;
+      background:rgba(0,179,136,0.12); border:2px solid var(--menthe);
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 1.1rem;
+      animation:successPop 0.48s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .merci-icon svg { width:28px; height:28px; color:var(--menthe); }
+    .modal-merci h2 { font-size:1.3rem; font-weight:500; margin-bottom:0.4rem; }
+    .modal-merci .subtitle { font-size:0.845rem; margin-bottom:1.25rem; }
+    .merci-score {
+      background:rgba(238,212,132,0.06); border:1px solid rgba(238,212,132,0.18);
+      border-radius:12px; padding:0.9rem; margin-bottom:1.25rem;
+    }
+    #btn-merci-restart {
+      width:100%; padding:0.88rem; border-radius:12px; border:none;
+      background:var(--cerulean); color:#fff;
+      font-family:var(--police-corps); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:all var(--transition);
+      box-shadow:0 4px 14px rgba(0,136,204,0.25);
+    }
+    #btn-merci-restart:hover { background:#009adb; }
     .modal-sheet {
       background:var(--sombre-fond-moyen);
       border:1px solid rgba(255,255,255,0.10);
@@ -587,8 +635,8 @@
     <textarea id="f-resume" placeholder="Généré par l'IA — éditez si besoin…"></textarea>
   </div>
 
-  <p class="section-label">Points couverts</p>
-  <div id="cl2" class="checklist" style="margin-bottom:1rem" role="list" aria-label="Points essentiels couverts"></div>
+  <p class="section-label">Points couverts <span class="cl-hint">— cliquez pour cocher / décocher</span></p>
+  <div id="cl2" class="checklist" style="margin-bottom:1rem" role="list" aria-label="Points essentiels couverts — cliquables"></div>
 
   <p class="section-label">Vos coordonnées</p>
 
@@ -663,6 +711,24 @@
     <p>Pour analyser votre pitch en temps réel, une clé API Anthropic est nécessaire. Elle est conservée uniquement durant cette session.</p>
     <input id="input-api-key" type="password" placeholder="sk-ant-api03-…" aria-label="Clé API Anthropic" autocomplete="off" spellcheck="false">
     <button id="btn-save-key">Continuer →</button>
+  </div>
+</div>
+
+<!-- Modal Merci -->
+<div id="modal-thanks" class="modal-bg modal-center" role="dialog" aria-modal="true" aria-labelledby="mt-title">
+  <div class="modal-merci">
+    <div class="merci-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <h2 id="mt-title">Merci <span id="mt-name"></span>&nbsp;!</h2>
+    <p class="subtitle">Votre pitch a bien été enregistré. L'équipe Innovation SNCF vous recontactera très vite.</p>
+    <div class="merci-score">
+      <div class="score-num"><span id="mt-score">0</span><span class="score-denom">/8</span></div>
+      <div class="score-lbl" id="mt-encourage">points essentiels couverts</div>
+    </div>
+    <button id="btn-merci-restart">Nouveau pitch</button>
   </div>
 </div>
 
@@ -757,17 +823,28 @@ function requireKey() {
 }
 
 /* ── Checklist ──────────────────────────────────────────────────── */
-function buildCL(cid) {
+function buildCL(cid, clickable = false) {
   const c = $(cid);
   c.innerHTML = '';
   ITEMS.forEach(item => {
     const div = document.createElement('div');
-    div.className = 'check-item' + (S.checks[item.id] ? ' checked' : '');
+    div.className = 'check-item' + (S.checks[item.id] ? ' checked' : '') + (clickable ? ' clickable' : '');
     div.id = `${cid}__${item.id}`;
-    div.setAttribute('role', 'listitem');
+    div.setAttribute('role', clickable ? 'button' : 'listitem');
+    if (clickable) div.setAttribute('tabindex', '0');
     div.innerHTML = `<div class="chk-icon" aria-hidden="true">${S.checks[item.id] ? '✓' : ''}</div><span>${item.q}</span>`;
+    if (clickable) {
+      div.addEventListener('click', () => toggleCheck(item.id));
+      div.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCheck(item.id); } });
+    }
     c.appendChild(div);
   });
+}
+
+function toggleCheck(itemId) {
+  S.checks[itemId] = !S.checks[itemId];
+  buildCL('cl2', true);
+  updateScorePill();
 }
 
 function syncCL() {
@@ -784,6 +861,11 @@ function syncCL() {
 }
 
 function checkedCount() { return ITEMS.filter(i => S.checks[i.id]).length; }
+
+function updateScorePill() {
+  const n = checkedCount();
+  $('score-txt').textContent = `${n}/8 points couverts`;
+}
 
 /* ── Compteur de mots ───────────────────────────────────────────── */
 function updateWordCount() {
@@ -1061,12 +1143,12 @@ function goReview() {
   pickOpt('f-maturite', ai.maturite);
   $('f-resume').value = ai.resume || '';
 
-  const n = checkedCount();
-  $('score-txt').textContent = `${n}/8 points couverts`;
-  buildCL('cl2');
+  updateScorePill();
+  buildCL('cl2', true);
   show('screen-review');
 
-  if (n < 8) toast(`${n}/8 points couverts — complétez si besoin.`, '', 5000);
+  const n = checkedCount();
+  if (n < 8) toast(`${n}/8 points couverts — cliquez sur les points manquants pour les cocher.`, '', 5500);
 }
 
 function pickOpt(id, val) {
@@ -1094,36 +1176,20 @@ function setErr(id, show) { $(id).classList.toggle('on', show); }
 
 async function submitPitch() {
   if (!validate()) return;
-  const btn = $('btn-submit');
-  btn.disabled = true; btn.textContent = 'Envoi en cours…';
 
   const payload = buildPayload();
-  showOverlay('Envoi de votre pitch…');
 
-  let sent = false;
-  try {
-    await fetch(SUBMIT_URL, {
+  // Envoi silencieux en arrière-plan si le webhook est configuré
+  if (SUBMIT_URL !== 'https://your-endpoint.example.com/submit') {
+    fetch(SUBMIT_URL, {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
       body:JSON.stringify(payload),
       mode:'no-cors',
-    });
-    sent = true;
-  } catch(e) { console.error('[Submit]', e); }
-
-  hideOverlay();
-
-  if (!sent) {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
-      toast('Envoi échoué — données copiées dans le presse-papier.', 'bad', 6000);
-    } catch {
-      toast('Envoi échoué. Contactez l\'animateur du stand.', 'bad', 6000);
-    }
-    btn.disabled = false; btn.textContent = 'Envoyer mon pitch →';
-    return;
+    }).catch(e => console.warn('[Submit]', e));
   }
-  goThanks(payload);
+
+  showThanksModal(payload);
 }
 
 function buildPayload() {
@@ -1153,12 +1219,12 @@ function buildPayload() {
   };
 }
 
-/* ── Transition → Screen 3 ──────────────────────────────────────── */
-function goThanks(payload) {
+/* ── Popup Merci ────────────────────────────────────────────────── */
+function showThanksModal(payload) {
   const prenom = payload.contact.nom.split(' ')[0] || payload.contact.nom;
-  $('thanks-name').textContent = prenom;
+  $('mt-name').textContent = prenom;
   const n = payload.pitch.questions_couvertes;
-  $('t-score').textContent = n;
+  $('mt-score').textContent = n;
   const msgs = [
     'Merci d\'avoir participé ! L\'équipe SNCF sera ravie d\'en apprendre plus.',
     'Merci pour votre partage — quelques éléments à compléter lors de l\'échange.',
@@ -1170,8 +1236,8 @@ function goThanks(payload) {
     'Excellent pitch, quasi parfait.',
     'Pitch parfait — tous les points couverts.',
   ];
-  $('t-encourage').textContent = msgs[Math.min(n, 8)];
-  show('screen-thanks');
+  $('mt-encourage').textContent = msgs[Math.min(n, 8)];
+  $('modal-thanks').classList.add('open');
 }
 
 /* ── Reset ──────────────────────────────────────────────────────── */
@@ -1226,6 +1292,10 @@ $('btn-analyze').addEventListener('click', async () => {
 
 $('btn-submit').addEventListener('click', submitPitch);
 $('btn-restart').addEventListener('click', reset);
+$('btn-merci-restart').addEventListener('click', () => {
+  $('modal-thanks').classList.remove('open');
+  reset();
+});
 
 $('pitch-text').addEventListener('input', updateWordCount);
 
